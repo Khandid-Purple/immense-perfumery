@@ -21,26 +21,12 @@ const recommendProductsDeclaration: FunctionDeclaration = {
   },
 };
 
-// Helper to ensure we have a valid key before trying to initialize
-const getApiKey = () => {
-  if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-    return process.env.API_KEY;
-  }
-  return '';
-};
-
 export const streamChatResponse = async (
   history: { role: string; text: string }[],
   newMessage: string,
   products: Product[],
   onChunk: (text: string, groundingMetadata?: any, functionCalls?: any[]) => void
 ): Promise<void> => {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    onChunk("\n✦ *Pardon me, the concierge is currently away. Please check your API configuration.* ✦");
-    return;
-  }
-
   try {
     const productList = products.map(p => ({ 
       id: p.id, 
@@ -57,10 +43,14 @@ export const streamChatResponse = async (
         systemInstruction: `You are 'Flora', the Signature Scent Consultant for Immense Perfumery in Ghana. 
 
 STRICT BEHAVIORAL RULES:
-1. **CONVERSATIONAL MEMORY**: You MUST mention the names of the perfumes you recommend in your text response.
-2. **CONSISTENCY**: Once you recommend a set of perfumes, those are your "picks".
+1. **CONVERSATIONAL MEMORY**: You MUST mention the names of the perfumes you recommend in your text response. If you don't name them in text, you will forget them in the next turn. 
+2. **CONSISTENCY**: Once you recommend a set of perfumes, those are your "picks". If the user asks "Why these?" or follows up, you MUST refer to the specific perfumes you previously named. Do not suggest different ones unless the user explicitly asks for a new search.
 3. **CONCISENESS**: Limit your preamble/text to 2 sentences. Be warm but professional.
-4. **CLIMATE EXPERTISE**: Prioritize "longevity" and "sillage" for Ghana's climate.
+4. **CLIMATE EXPERTISE**: You understand Accra's humidity and heat. Prioritize "longevity" and "sillage" (staying power).
+
+RESPONSE PATTERN:
+- User asks for a scent -> You say: "I recommend **[Name 1]** and **[Name 2]** for [Occasion/Reason]. They handle the heat beautifully." -> You call 'recommendProducts'.
+- User asks "Why these?" -> You say: "I chose **[Name 1]** because [Specific Note Reason] and **[Name 2]** due to its [Specific Note Reason] in our humidity."
 
 CATALOG DATA:
 ${JSON.stringify(productList)}`,
@@ -89,11 +79,6 @@ export interface AnalysisResponse {
 }
 
 export const analyzeImage = async (base64Image: string, mimeType: string, products: Product[]): Promise<AnalysisResponse> => {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    return { description: "✦ API Key is missing. Please configure it in your environment. ✦", recommendedProductIds: [] };
-  }
-
   try {
     const productList = products.map(p => ({ id: p.id, name: p.name }));
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });

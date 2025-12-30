@@ -40,8 +40,8 @@ export const useShop = () => {
   return context;
 };
 
-// Fixed generic syntax for .tsx files to prevent them from being misinterpreted as JSX tags by adding `extends unknown`
 const getSafeStorage = <T extends unknown>(key: string, defaultValue: T): T => {
+  if (typeof window === 'undefined') return defaultValue;
   try {
     const saved = localStorage.getItem(key);
     return saved ? (JSON.parse(saved) as T) : defaultValue;
@@ -55,7 +55,6 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [heroProductId, setHeroProductId] = useState<string>('1');
   
-  // Initialize state directly from storage to avoid race conditions
   const [cart, setCart] = useState<CartItem[]>(() => getSafeStorage<CartItem[]>('cart', []));
   const [wishlist, setWishlist] = useState<Product[]>(() => getSafeStorage<Product[]>('wishlist', []));
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => getSafeStorage<string[]>('recently_viewed', []));
@@ -69,7 +68,6 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchSettings();
   }, []);
 
-  // Persist changes to storage whenever they occur
   useEffect(() => { localStorage.setItem('cart', JSON.stringify(cart)); }, [cart]);
   useEffect(() => { localStorage.setItem('wishlist', JSON.stringify(wishlist)); }, [wishlist]);
   useEffect(() => { localStorage.setItem('recently_viewed', JSON.stringify(recentlyViewedIds)); }, [recentlyViewedIds]);

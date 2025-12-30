@@ -21,22 +21,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within a AuthProvider');
+  if (!context) {
+    throw new Error('useAuth must be used within a AuthProvider');
+  }
   return context;
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem('user_session');
-    if (stored) {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user_session');
+    if (storedUser) {
       try {
-        return JSON.parse(stored);
+        setUser(JSON.parse(storedUser));
       } catch (e) {
-        return null;
+        console.error("Failed to parse user session", e);
       }
     }
-    return null;
-  });
+  }, []);
 
   useEffect(() => {
     if (user) {
