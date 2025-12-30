@@ -40,25 +40,13 @@ export const useShop = () => {
   return context;
 };
 
-const getSafeStorage = <T extends unknown>(key: string, defaultValue: T): T => {
-  if (typeof window === 'undefined') return defaultValue;
-  try {
-    const saved = localStorage.getItem(key);
-    return saved ? (JSON.parse(saved) as T) : defaultValue;
-  } catch (e) {
-    return defaultValue;
-  }
-};
-
 export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [heroProductId, setHeroProductId] = useState<string>('1');
-  
-  const [cart, setCart] = useState<CartItem[]>(() => getSafeStorage<CartItem[]>('cart', []));
-  const [wishlist, setWishlist] = useState<Product[]>(() => getSafeStorage<Product[]>('wishlist', []));
-  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => getSafeStorage<string[]>('recently_viewed', []));
-  
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>([]);
   const [directCheckoutItem, setDirectCheckoutItem] = useState<CartItem | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
@@ -67,10 +55,6 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     refreshProducts();
     fetchSettings();
   }, []);
-
-  useEffect(() => { localStorage.setItem('cart', JSON.stringify(cart)); }, [cart]);
-  useEffect(() => { localStorage.setItem('wishlist', JSON.stringify(wishlist)); }, [wishlist]);
-  useEffect(() => { localStorage.setItem('recently_viewed', JSON.stringify(recentlyViewedIds)); }, [recentlyViewedIds]);
 
   const refreshProducts = async () => {
     try {
@@ -97,10 +81,24 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (e) {}
   };
 
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    const savedWishlist = localStorage.getItem('wishlist');
+    const savedRecent = localStorage.getItem('recently_viewed');
+    
+    if (savedCart) try { setCart(JSON.parse(savedCart)); } catch (e) {}
+    if (savedWishlist) try { setWishlist(JSON.parse(savedWishlist)); } catch (e) {}
+    if (savedRecent) try { setRecentlyViewedIds(JSON.parse(savedRecent)); } catch (e) {}
+  }, []);
+
+  useEffect(() => { localStorage.setItem('cart', JSON.stringify(cart)); }, [cart]);
+  useEffect(() => { localStorage.setItem('wishlist', JSON.stringify(wishlist)); }, [wishlist]);
+  useEffect(() => { localStorage.setItem('recently_viewed', JSON.stringify(recentlyViewedIds)); }, [recentlyViewedIds]);
+
   const addToRecentlyViewed = (id: string) => {
     setRecentlyViewedIds(prev => {
       const filtered = prev.filter(pId => pId !== id);
-      return [id, ...filtered].slice(0, 10);
+      return [id, ...filtered].slice(0, 10); // Keep last 10
     });
   };
 
@@ -122,7 +120,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         success = false;
         return prev;
       }
-      return [...prev, { ...product, quantity: 1 } as CartItem];
+      return [...prev, { ...product, quantity: 1 }];
     });
     if (success) setIsCartOpen(true);
     return success;
@@ -143,10 +141,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const buyNow = (product: Product) => {
     const latest = products.find(p => p.id === product.id);
-    if (latest && latest.stock > 0) {
-      setDirectCheckoutItem({ ...product, quantity: 1 } as CartItem);
-      addToRecentlyViewed(product.id);
-    }
+    if (latest && latest.stock > 0) setDirectCheckoutItem({ ...product, quantity: 1 });
   };
 
   const clearDirectCheckout = () => setDirectCheckoutItem(null);
