@@ -1,167 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Immense Perfumery - Discover your signature scent with our premium collection and AI-powered recommendations." />
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://immense-perfumery.com/" />
-    <meta property="og:title" content="Immense Perfumery" />
-    <meta property="og:description" content="Discover your signature scent with our premium collection and AI-powered recommendations." />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://immense-perfumery.com/" />
-    <meta property="twitter:title" content="Immense Perfumery" />
-    <meta property="twitter:description" content="Discover your signature scent with our premium collection and AI-powered recommendations." />
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Immense Perfumery - Discover your signature scent with our premium collection and AI-powered recommendations." />
 
-    <title>Immense Perfumery</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              'brand-pink': '#FF4D8D',
-              'brand-pink-light': '#FFE4ED',
-              'brand-pink-dark': '#D9326D',
-              'brand-bg': '#FFF0F5',
-              'dark-bg': '#020617', 
-              'dark-card': '#1E293B',
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://immense-perfumery.com/" />
+  <meta property="og:title" content="Immense Perfumery" />
+  <meta property="og:description"
+    content="Discover your signature scent with our premium collection and AI-powered recommendations." />
+  <meta property="og:image"
+    content="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://immense-perfumery.com/" />
+  <meta property="twitter:title" content="Immense Perfumery" />
+  <meta property="twitter:description"
+    content="Discover your signature scent with our premium collection and AI-powered recommendations." />
+  <meta property="twitter:image"
+    content="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop" />
+
+  <title>Immense Perfumery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'brand-pink': '#FF4D8D',
+            'brand-pink-light': '#FFE4ED',
+            'brand-pink-dark': '#D9326D',
+            'brand-bg': '#FFF0F5',
+            'dark-bg': '#020617',
+            'dark-card': '#1E293B',
+          },
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          animation: {
+            'spray-1': 'sprayMove1 15s infinite alternate',
+            'spray-2': 'sprayMove2 20s infinite alternate',
+            'spray-3': 'sprayMove3 18s infinite alternate',
+            'fade-in': 'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'spin-slow': 'spin 12s linear infinite',
+            'marquee': 'marquee 25s linear infinite',
+            'marquee-reverse': 'marqueeReverse 25s linear infinite',
+            'pop': 'pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
             },
-            fontFamily: {
-              sans: ['Poppins', 'sans-serif'],
-              serif: ['Playfair Display', 'serif'],
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
             },
-            animation: {
-              'spray-1': 'sprayMove1 15s infinite alternate',
-              'spray-2': 'sprayMove2 20s infinite alternate',
-              'spray-3': 'sprayMove3 18s infinite alternate',
-              'fade-in': 'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-              'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-              'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-              'spin-slow': 'spin 12s linear infinite',
-              'marquee': 'marquee 25s linear infinite',
-              'marquee-reverse': 'marqueeReverse 25s linear infinite',
-              'pop': 'pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px) scale(0.98)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
             },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              slideUp: {
-                '0%': { opacity: '0', transform: 'translateY(10px) scale(0.98)' },
-                '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
-              },
-              marquee: {
-                '0%': { transform: 'translateX(0)' },
-                '100%': { transform: 'translateX(-100%)' },
-              },
-              marqueeReverse: {
-                '0%': { transform: 'translateX(-100%)' },
-                '100%': { transform: 'translateX(0)' },
-              },
-              pop: {
-                '0%': { transform: 'scale(1)' },
-                '50%': { transform: 'scale(1.35)' },
-                '100%': { transform: 'scale(1)' },
-              }
+            marquee: {
+              '0%': { transform: 'translateX(0)' },
+              '100%': { transform: 'translateX(-100%)' },
+            },
+            marqueeReverse: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(0)' },
+            },
+            pop: {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.35)' },
+              '100%': { transform: 'scale(1)' },
             }
           }
         }
       }
-    </script>
-    <style>
-      body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #FFF0F5;
-        transition: background-color 0.3s ease;
-        overflow-x: hidden;
-      }
-      .dark body {
-        background-color: #020617;
-      }
-      
-      /* Luxury Noise Texture */
-      .bg-noise {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
-        z-index: 50;
-        opacity: 0.03;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-      }
-      .dark .bg-noise {
-        opacity: 0.04;
-      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #FFF0F5;
+      transition: background-color 0.3s ease;
+      overflow-x: hidden;
+    }
 
-      .glass-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-      .dark .glass-card {
-        background: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      
-      /* 3D Perspective Utils */
-      .perspective-1000 {
-        perspective: 1000px;
-      }
-      .transform-style-3d {
-        transform-style: preserve-3d;
-      }
-      .backface-hidden {
-        backface-visibility: hidden;
-      }
+    .dark body {
+      background-color: #020617;
+    }
 
-      /* Scrollbars */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-      }
-      .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-      }
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: rgba(156, 163, 175, 0.5);
-        border-radius: 20px;
-      }
-      
-      /* Text Highlight Animation */
-      .text-highlight {
-        background-size: 200% 100%;
-        background-position: 100%;
-        transition: background-position 0.5s ease;
-      }
-      .group:hover .text-highlight {
-        background-position: 0%;
-      }
-    </style>
+    /* Luxury Noise Texture */
+    .bg-noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .dark .bg-noise {
+      opacity: 0.04;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .dark .glass-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* 3D Perspective Utils */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+
+    /* Scrollbars */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: rgba(156, 163, 175, 0.5);
+      border-radius: 20px;
+    }
+
+    /* Text Highlight Animation */
+    .text-highlight {
+      background-size: 200% 100%;
+      background-position: 100%;
+      transition: background-position 0.5s ease;
+    }
+
+    .group:hover .text-highlight {
+      background-position: 0%;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -173,7 +191,10 @@
 }
 </script>
 </head>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+<div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+
+
+</body>
+
 </html>
