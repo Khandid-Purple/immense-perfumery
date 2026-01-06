@@ -331,6 +331,14 @@ const Account: React.FC = () => {
                                     </div>
                                  </div>
                                ))}
+
+                               {/* Display Order Note if it exists */}
+                               {order.orderNote && (
+                                 <div className="mt-4 p-4 rounded-xl bg-pink-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 italic text-sm text-gray-600 dark:text-gray-300">
+                                    <p className="text-[10px] font-bold text-brand-pink uppercase tracking-widest not-italic mb-1">Your Note:</p>
+                                    "{order.orderNote}"
+                                 </div>
+                               )}
                             </div>
                          </div>
                       </div>

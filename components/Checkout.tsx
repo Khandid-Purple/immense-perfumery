@@ -24,6 +24,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
   const [appliedPromo, setAppliedPromo] = useState<{ code: string, percent: number } | null>(null);
   const [selectedShippingId, setSelectedShippingId] = useState<string>('standard');
   const [giftWrap, setGiftWrap] = useState(false);
+  const [orderNote, setOrderNote] = useState('');
   
   // API settings
   const [settings, setSettings] = useState<any>({
@@ -60,7 +61,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
   // Use the direct checkout item if it exists, otherwise use the main cart
   const items = directCheckoutItem ? [directCheckoutItem] : cart;
-  const subtotal = directCheckoutItem ? directCheckoutItem.price : cartTotal;
+  const subtotal = directCheckoutItem ? directCheckoutItem.price * directCheckoutItem.quantity : cartTotal;
 
   const shippingOptions = [
     { id: 'pickup', label: 'Shop Pickup', price: 0, desc: 'Collect from ACP Estate, Accra' },
@@ -88,7 +89,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
   };
 
   const handleItemRemove = (id: string) => {
-    if (directCheckoutItem) {
+    if (directCheckoutItem && directCheckoutItem.id === id) {
       clearDirectCheckout();
       onNavigate('home');
     } else {
@@ -98,13 +99,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
   };
 
   const handleItemQtyUpdate = (id: string, delta: number) => {
-    if (directCheckoutItem) {
-      // If direct checkout, clear it and push to cart for better management
-      clearDirectCheckout();
-      updateQuantity(id, delta);
-    } else {
-      updateQuantity(id, delta);
-    }
+    updateQuantity(id, delta);
   };
 
   const validateInputs = () => {
@@ -130,6 +125,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
         subtotal,
         discount,
         giftWrap,
+        orderNote: orderNote.trim() || undefined,
         shippingMethod: selectedMethod.label,
         shippingCost,
         total: finalTotal,
@@ -169,14 +165,14 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center py-20 px-6 animate-fade-in relative text-center">
+      <div className="min-h-[80vh] w-full flex flex-col items-center justify-center py-20 px-6 animate-fade-in relative text-center">
         {/* Background Decorative Globs */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-pink/20 rounded-full blur-[120px]"></div>
            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-400/10 rounded-full blur-[100px]"></div>
         </div>
         
-        {/* Main Content Card - Now strictly flex-col centered */}
+        {/* Main Content Card - Perfectly Centered */}
         <div className="w-full max-w-lg bg-white/70 dark:bg-dark-card/70 backdrop-blur-xl p-10 md:p-16 rounded-[3rem] shadow-2xl border border-white/50 dark:border-white/10 flex flex-col items-center justify-center relative z-10 animate-slide-up">
           <div className="w-20 h-20 bg-brand-pink/10 rounded-full flex items-center justify-center mb-8">
              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-pink"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
@@ -283,25 +279,46 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
             </div>
           </section>
 
-          {/* 3. Gift Options */}
-          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm transition-all">
-             <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 flex-1">
-                   <div className="w-14 h-14 rounded-[1.2rem] bg-brand-pink/10 dark:bg-brand-pink/5 flex items-center justify-center text-brand-pink flex-shrink-0 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
-                   </div>
-                   <div className="min-w-0">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-base md:text-lg">Signature Gift Wrapping</h3>
-                      <p className="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 line-clamp-2">Premium pink box with a handwritten note (+₵{settings.giftWrapRate})</p>
-                   </div>
+          {/* 3. Special Instructions */}
+          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
+             <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
+                <span className="w-8 h-8 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-bold">3</span>
+                Special Touches
+             </h2>
+             <div className="space-y-6">
+                <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-transparent transition-all">
+                  <div className="flex items-center gap-4 flex-1">
+                     <div className="w-12 h-12 rounded-xl bg-brand-pink/10 text-brand-pink flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                     </div>
+                     <div>
+                        <h3 className="font-bold text-gray-900 dark:text-white text-sm">Signature Gift Wrapping</h3>
+                        <p className="text-[10px] text-gray-500">Premium box + note (+₵{settings.giftWrapRate})</p>
+                     </div>
+                  </div>
+                  <button 
+                    onClick={() => setGiftWrap(!giftWrap)}
+                    className={`w-12 h-6 rounded-full transition-all relative ${giftWrap ? 'bg-brand-pink' : 'bg-gray-200 dark:bg-white/10'}`}
+                  >
+                     <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${giftWrap ? 'left-[calc(100%-20px)]' : 'left-1'}`}></div>
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setGiftWrap(!giftWrap)}
-                  className={`w-14 h-7 rounded-full transition-all relative flex-shrink-0 ${giftWrap ? 'bg-brand-pink' : 'bg-gray-200 dark:bg-white/10'}`}
-                  aria-label="Toggle Gift Wrapping"
-                >
-                   <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all shadow-md ${giftWrap ? 'left-[calc(100%-24px)]' : 'left-1'}`}></div>
-                </button>
+
+                <div className="space-y-2">
+                   <div className="flex justify-between items-center">
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order Note / Special Requests</label>
+                      <span className={`text-[9px] font-bold ${orderNote.length > 250 ? 'text-brand-pink' : 'text-gray-400'}`}>
+                         {orderNote.length} / 300
+                      </span>
+                   </div>
+                   <textarea 
+                     maxLength={300}
+                     placeholder="E.g. Please leave with the concierge, or 'Happy Birthday' message for gift wrap..."
+                     value={orderNote}
+                     onChange={(e) => setOrderNote(e.target.value)}
+                     className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-black/20 dark:text-white border-2 border-transparent focus:border-brand-pink focus:bg-white dark:focus:bg-black/40 transition-all outline-none resize-none text-sm leading-relaxed min-h-[100px]"
+                   />
+                </div>
              </div>
           </section>
         </div>

@@ -22,6 +22,9 @@ const AdminDashboard: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  // Expanded Order Details state
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+
   // Promotions Form State
   const [promoCode, setPromoCode] = useState('');
   const [promoDiscount, setPromoDiscount] = useState(10);
@@ -535,35 +538,77 @@ const AdminDashboard: React.FC = () => {
                         <th className="p-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</th>
                         <th className="p-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total</th>
                         <th className="p-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
-                        <th className="p-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Update</th>
+                        <th className="p-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Details</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredOrders.map(order => (
-                        <tr key={order.id} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-                          <td className="p-4 text-xs font-mono text-gray-500">{order.id.slice(-8)}</td>
-                          <td className="p-4 text-xs text-gray-600 dark:text-gray-400">{order.date}</td>
-                          <td className="p-4 text-sm font-bold">{order.shippingAddress.firstName}</td>
-                          <td className="p-4 text-sm font-bold text-brand-pink">₵{order.total.toLocaleString()}</td>
-                          <td className="p-4">
-                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${getStatusColor(order.status)}`}>
-                               {order.status}
-                             </span>
-                          </td>
-                          <td className="p-4 text-right">
-                             <select 
-                               value={order.status} 
-                               onChange={(e) => handleStatusUpdate(order.id, e.target.value as Order['status'])}
-                               className="bg-gray-100 dark:bg-black/20 border-none rounded-lg text-xs py-1 px-2 font-bold"
-                             >
-                               <option value="Order Confirmed">Confirmed</option>
-                               <option value="Processing">Process</option>
-                               <option value="Shipped">Ship</option>
-                               <option value="Delivered">Finish</option>
-                               <option value="Cancelled">Cancel</option>
-                             </select>
-                          </td>
-                        </tr>
+                        <React.Fragment key={order.id}>
+                          <tr className={`border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer ${expandedOrderId === order.id ? 'bg-gray-50 dark:bg-white/5' : ''}`} onClick={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}>
+                            <td className="p-4 text-xs font-mono text-gray-500">{order.id.slice(-8)}</td>
+                            <td className="p-4 text-xs text-gray-600 dark:text-gray-400">{order.date}</td>
+                            <td className="p-4 text-sm font-bold">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</td>
+                            <td className="p-4 text-sm font-bold text-brand-pink">₵{order.total.toLocaleString()}</td>
+                            <td className="p-4">
+                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${getStatusColor(order.status)}`}>
+                                 {order.status}
+                               </span>
+                            </td>
+                            <td className="p-4 text-right">
+                               <button className="text-gray-400 hover:text-brand-pink">
+                                  <svg className={`w-5 h-5 transition-transform ${expandedOrderId === order.id ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+                               </button>
+                            </td>
+                          </tr>
+                          {expandedOrderId === order.id && (
+                            <tr>
+                               <td colSpan={6} className="p-0">
+                                  <div className="p-6 bg-gray-50 dark:bg-black/10 animate-slide-up border-b border-gray-100 dark:border-white/10">
+                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-4">
+                                           <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order Fulfillment</h4>
+                                           <div className="flex items-center gap-4">
+                                              <select 
+                                                value={order.status} 
+                                                onChange={(e) => handleStatusUpdate(order.id, e.target.value as Order['status'])}
+                                                className="bg-white dark:bg-dark-card border border-gray-200 dark:border-white/10 rounded-xl text-sm py-2 px-4 font-bold"
+                                              >
+                                                <option value="Order Confirmed">Order Confirmed</option>
+                                                <option value="Processing">Processing</option>
+                                                <option value="Shipped">Shipped</option>
+                                                <option value="Delivered">Delivered</option>
+                                                <option value="Cancelled">Cancelled</option>
+                                              </select>
+                                           </div>
+                                           <div className="p-4 rounded-xl bg-white dark:bg-dark-card border border-gray-100 dark:border-white/5 space-y-2">
+                                              <p className="text-xs font-bold text-gray-800 dark:text-white">Shipping To:</p>
+                                              <p className="text-xs text-gray-500">{order.shippingAddress.street}, {order.shippingAddress.city}</p>
+                                              <p className="text-xs text-gray-500">{order.shippingAddress.region} | {order.shippingAddress.phone}</p>
+                                           </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                           <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Special Requests</h4>
+                                           <div className={`p-4 rounded-xl border border-dashed transition-colors ${order.orderNote ? 'bg-pink-50/50 dark:bg-brand-pink/5 border-brand-pink/30' : 'bg-white dark:bg-dark-card border-gray-200 dark:border-white/10'}`}>
+                                              {order.orderNote ? (
+                                                <p className="text-sm italic text-gray-700 dark:text-gray-200 leading-relaxed">"{order.orderNote}"</p>
+                                              ) : (
+                                                <p className="text-xs text-gray-400 italic">No special instructions provided.</p>
+                                              )}
+                                              {order.giftWrap && (
+                                                <div className="mt-3 flex items-center gap-2 text-brand-pink font-bold text-[10px] uppercase tracking-wider">
+                                                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                                                   GIFT WRAPPING REQUIRED
+                                                </div>
+                                              )}
+                                           </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                               </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>

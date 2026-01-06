@@ -127,6 +127,22 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updateQuantity = (productId: string, delta: number) => {
+    // 1. Handle Direct Checkout Item (Buy Now flow)
+    if (directCheckoutItem && directCheckoutItem.id === productId) {
+      const newQty = directCheckoutItem.quantity + delta;
+      if (newQty < 1) {
+        setDirectCheckoutItem(null);
+        return;
+      }
+      const latestProd = products.find(p => p.id === productId);
+      const maxStock = latestProd ? latestProd.stock : 999;
+      if (newQty <= maxStock) {
+        setDirectCheckoutItem({ ...directCheckoutItem, quantity: newQty });
+      }
+      return;
+    }
+
+    // 2. Handle standard Cart items
     setCart(prev => prev.map(item => {
       if (item.id === productId) {
         const latestProd = products.find(p => p.id === productId);

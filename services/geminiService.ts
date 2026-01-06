@@ -65,17 +65,22 @@ ${JSON.stringify(productList)}`,
 
     const result = await chat.sendMessageStream({ message: newMessage });
     for await (const chunk of result) {
-      if (!chunk || !chunk.candidates?.[0]) continue;
+      if (!chunk) continue;
       
+      const candidate = chunk.candidates?.[0];
       const text = chunk.text || "";
       const fCalls = chunk.functionCalls;
-      const grounding = chunk.candidates[0].groundingMetadata;
+      const grounding = candidate?.groundingMetadata;
       
+      // Even if text is empty (e.g. tool call start), we trigger the update to handle tools/grounding
       onChunk(text, grounding, fCalls);
     }
-  } catch (error) {
-    console.error("Flora Connection Hitch:", error);
-    onChunk("\n✦ *Pardon me, I lost the trail of that scent for a moment. Let me refocus.* ✦");
+  } catch (error: any) {
+    console.error("Flora Connection Error:", error);
+    const friendlyError = error?.status === 429 
+      ? "\n✦ *Pardon me, I'm a bit overwhelmed with requests at the moment. Please wait a second.* ✦"
+      : "\n✦ *Pardon me, I lost the trail of that scent for a moment. Let me refocus.* ✦";
+    onChunk(friendlyError);
   }
 };
 

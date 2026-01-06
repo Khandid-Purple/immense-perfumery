@@ -56,6 +56,7 @@ export interface Order {
   subtotal: number;
   discount: number;
   giftWrap: boolean;
+  orderNote?: string;
   shippingMethod: string;
   shippingCost: number;
   total: number;
