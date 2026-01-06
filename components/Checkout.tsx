@@ -183,10 +183,10 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
       {showConfetti && <Confetti />}
       
       <div className="flex items-center gap-4 mb-10">
-        <button onClick={() => onNavigate('home')} className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
+        <button onClick={() => onNavigate('home')} className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors text-gray-800 dark:text-white">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-3xl md:text-4xl font-serif font-bold">Checkout</h1>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white transition-colors">Checkout</h1>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-12">
@@ -195,7 +195,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
           
           {/* 1. Shipping Information */}
           <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
-            <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
               <span className="w-8 h-8 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-bold">1</span>
               Delivery Details
             </h2>
@@ -220,7 +220,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
           {/* 2. Shipping Methods */}
           <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
-            <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
               <span className="w-8 h-8 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-bold">2</span>
               Shipping Method
             </h2>
@@ -253,23 +253,24 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
             </div>
           </section>
 
-          {/* 3. Gift Options */}
-          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
-             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                   <div className="w-12 h-12 rounded-2xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-brand-pink">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+          {/* 3. Gift Options - REFINED UI */}
+          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm transition-all">
+             <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4 flex-1">
+                   <div className="w-14 h-14 rounded-[1.2rem] bg-brand-pink/10 dark:bg-brand-pink/5 flex items-center justify-center text-brand-pink flex-shrink-0 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
                    </div>
-                   <div>
-                      <h3 className="font-bold text-gray-900 dark:text-white">Signature Gift Wrapping</h3>
-                      <p className="text-xs text-gray-500">Premium pink box with a handwritten note (+₵{settings.giftWrapRate})</p>
+                   <div className="min-w-0">
+                      <h3 className="font-bold text-gray-900 dark:text-white text-base md:text-lg">Signature Gift Wrapping</h3>
+                      <p className="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 line-clamp-2">Premium pink box with a handwritten note (+₵{settings.giftWrapRate})</p>
                    </div>
                 </div>
                 <button 
                   onClick={() => setGiftWrap(!giftWrap)}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${giftWrap ? 'bg-brand-pink' : 'bg-gray-200 dark:bg-white/10'}`}
+                  className={`w-14 h-7 rounded-full transition-all relative flex-shrink-0 ${giftWrap ? 'bg-brand-pink' : 'bg-gray-200 dark:bg-white/10'}`}
+                  aria-label="Toggle Gift Wrapping"
                 >
-                   <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${giftWrap ? 'left-7' : 'left-1'}`}></div>
+                   <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all shadow-md ${giftWrap ? 'left-[calc(100%-24px)]' : 'left-1'}`}></div>
                 </button>
              </div>
           </section>
@@ -277,8 +278,8 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
         {/* Sidebar Summary */}
         <div className="w-full lg:w-1/3">
-          <div className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-xl sticky top-24">
-            <h2 className="text-xl font-serif font-bold mb-6">Order Summary</h2>
+          <div className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-xl sticky top-24 transition-colors">
+            <h2 className="text-xl font-serif font-bold mb-6 text-gray-900 dark:text-white">Order Summary</h2>
 
             {/* Free Shipping Progress */}
             <div className="mb-8 p-4 bg-brand-pink/5 rounded-2xl border border-brand-pink/10">
@@ -314,9 +315,9 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
                        </div>
                        <div className="flex justify-between items-center mt-1">
                           <div className="flex items-center gap-2">
-                             <button onClick={() => handleItemQtyUpdate(item.id, -1)} className="w-5 h-5 rounded-md bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] hover:bg-brand-pink hover:text-white transition-colors">-</button>
-                             <span className="text-[10px] font-bold">{item.quantity}</span>
-                             <button onClick={() => handleItemQtyUpdate(item.id, 1)} className="w-5 h-5 rounded-md bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] hover:bg-brand-pink hover:text-white transition-colors">+</button>
+                             <button onClick={() => handleItemQtyUpdate(item.id, -1)} className="w-5 h-5 rounded-md bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] hover:bg-brand-pink hover:text-white transition-colors text-gray-500">-</button>
+                             <span className="text-[10px] font-bold text-gray-800 dark:text-white">{item.quantity}</span>
+                             <button onClick={() => handleItemQtyUpdate(item.id, 1)} className="w-5 h-5 rounded-md bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[10px] hover:bg-brand-pink hover:text-white transition-colors text-gray-500">+</button>
                           </div>
                           <span className="text-xs font-bold text-gray-900 dark:text-white">₵{(item.price * item.quantity).toLocaleString()}</span>
                        </div>
@@ -331,7 +332,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
                  placeholder="Promo Code" 
                  value={promoCode}
                  onChange={e => setPromoCode(e.target.value)}
-                 className="flex-1 px-4 py-2 rounded-xl bg-gray-50 dark:bg-black/20 text-sm border-transparent focus:border-brand-pink outline-none transition-all"
+                 className="flex-1 px-4 py-2 rounded-xl bg-gray-50 dark:bg-black/20 text-sm border-transparent focus:border-brand-pink outline-none transition-all dark:text-white"
                />
                <button 
                  type="submit"
@@ -344,16 +345,16 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
             <div className="space-y-3 border-t border-gray-100 dark:border-white/10 pt-6 mb-8">
                <div className="flex justify-between text-sm">
-                 <span className="text-gray-500">Subtotal</span>
+                 <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
                  <span className="font-medium text-gray-900 dark:text-white">₵{subtotal.toLocaleString()}</span>
                </div>
                <div className="flex justify-between text-sm">
-                 <span className="text-gray-500">Shipping ({selectedMethod.label})</span>
+                 <span className="text-gray-500 dark:text-gray-400">Shipping ({selectedMethod.label})</span>
                  <span className="font-medium text-gray-900 dark:text-white">{shippingCost === 0 ? 'FREE' : `₵${shippingCost}`}</span>
                </div>
                {giftWrap && (
                  <div className="flex justify-between text-sm">
-                   <span className="text-gray-500">Gift Wrapping</span>
+                   <span className="text-gray-500 dark:text-gray-400">Gift Wrapping</span>
                    <span className="font-medium text-gray-900 dark:text-white">₵{settings.giftWrapRate}</span>
                  </div>
                )}
@@ -366,7 +367,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
             </div>
 
             <div className="flex justify-between items-center mb-8">
-               <span className="text-lg font-serif font-bold">Total</span>
+               <span className="text-lg font-serif font-bold text-gray-900 dark:text-white">Total</span>
                <span className="text-2xl font-bold text-brand-pink">₵{finalTotal.toLocaleString()}</span>
             </div>
 
