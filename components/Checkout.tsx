@@ -169,9 +169,35 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
   if (!isAuthenticated) {
     return (
-      <div className="py-20 text-center animate-fade-in">
-        <h2 className="text-2xl font-serif font-bold mb-6">Sign in to complete your order</h2>
-        <Button onClick={() => onNavigate('login')}>Sign In to Checkout</Button>
+      <div className="min-h-[70vh] flex items-center justify-center py-20 px-6 animate-fade-in relative">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-pink/20 rounded-full blur-[120px]"></div>
+           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-400/10 rounded-full blur-[100px]"></div>
+        </div>
+        
+        <div className="w-full max-w-lg bg-white/70 dark:bg-dark-card/70 backdrop-blur-xl p-10 md:p-16 rounded-[3rem] shadow-2xl border border-white/50 dark:border-white/10 text-center relative z-10">
+          <div className="w-20 h-20 bg-brand-pink/10 rounded-full flex items-center justify-center mx-auto mb-8">
+             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-pink"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4 text-gray-900 dark:text-white">Sign in to complete your order</h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-10 text-lg font-light leading-relaxed">
+            Please log in or create an account to secure your signature fragrance and manage your delivery details.
+          </p>
+          <div className="flex justify-center">
+            <Button 
+              onClick={() => onNavigate('login-from-checkout')} 
+              className="px-12 py-5 text-lg font-bold shadow-xl shadow-brand-pink/30 hover:scale-105"
+            >
+              Sign In to Checkout
+            </Button>
+          </div>
+          <button 
+             onClick={() => onNavigate('home')}
+             className="mt-8 text-sm font-bold text-gray-400 hover:text-brand-pink transition-colors uppercase tracking-widest"
+          >
+            ← Back to Store
+          </button>
+        </div>
       </div>
     );
   }
@@ -253,7 +279,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
             </div>
           </section>
 
-          {/* 3. Gift Options - REFINED UI */}
+          {/* 3. Gift Options - REFINED MOBILE UI */}
           <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm transition-all">
              <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 flex-1">

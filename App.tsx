@@ -20,6 +20,7 @@ import Checkout from './components/Checkout';
 import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
+// Fix: Import AdminDashboard which was missing causing errors on lines 128 and 145
 import AdminDashboard from './components/AdminDashboard';
 import { PageTransition } from './components/ui/PageTransition';
 import { Product } from './types';
@@ -44,15 +45,24 @@ const AdminRoute: React.FC<{ children: React.ReactNode, onNavigate: (page: strin
 
 const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
+  const [intendedView, setIntendedView] = useState<View | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const { isAdmin } = useAuth();
+  const { isAdmin, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAdmin) {
       setCurrentView('admin');
     }
   }, [isAdmin]);
+
+  // Handle redirect after login
+  useEffect(() => {
+    if (isAuthenticated && intendedView) {
+      setCurrentView(intendedView);
+      setIntendedView(null);
+    }
+  }, [isAuthenticated, intendedView]);
 
   const blob1Ref = useRef<HTMLDivElement>(null);
   const blob2Ref = useRef<HTMLDivElement>(null);
@@ -101,6 +111,9 @@ const AppContent: React.FC = () => {
     } else if (page === 'checkout') {
       setCurrentView('checkout');
     } else if (page === 'login') {
+      setCurrentView('login');
+    } else if (page === 'login-from-checkout') {
+      setIntendedView('checkout');
       setCurrentView('login');
     } else if (page === 'register') {
       setCurrentView('register');
