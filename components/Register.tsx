@@ -20,11 +20,14 @@ const Register: React.FC<RegisterProps> = ({ onNavigate }) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // register() in AuthContext now handles setting the user session automatically
       await register(name, email, password);
-      showToast('Account created successfully!', 'success');
+      showToast(`Welcome to Immense Perfumery, ${name.split(' ')[0]}! ✨`, 'success');
+      
+      // Automatic redirection is handled globally by App.tsx, but we can also trigger it here
       onNavigate('home');
-    } catch (error) {
-      showToast('Registration failed. Please try again.', 'info');
+    } catch (error: any) {
+      showToast(error.message || 'Registration failed. Please try again.', 'info');
     } finally {
       setLoading(false);
     }

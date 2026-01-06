@@ -49,8 +49,15 @@ const AppContent: React.FC = () => {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const { isAdmin, isAuthenticated } = useAuth();
 
+  // Guard: Automatically redirect to home if logged out while on protected pages
   useEffect(() => {
-    if (isAdmin) {
+    if (!isAuthenticated && (currentView === 'account' || currentView === 'admin')) {
+      setCurrentView('home');
+    }
+  }, [isAuthenticated, currentView]);
+
+  useEffect(() => {
+    if (isAdmin && currentView !== 'admin' && currentView !== 'details') {
       setCurrentView('admin');
     }
   }, [isAdmin]);
@@ -227,7 +234,7 @@ const AppContent: React.FC = () => {
       </div>
 
       {!isAdmin && <CartDrawer onCheckout={() => handleNavigate('checkout')} />}
-      {!isAdmin && <WishlistDrawer />}
+      {!isAdmin && <WishlistDrawer onProductSelect={handleProductSelect} />}
       {!isAdmin && <ChatBot onProductSelect={handleProductSelect} />}
       
       <QuickViewModal 
