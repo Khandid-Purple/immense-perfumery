@@ -20,7 +20,6 @@ import Checkout from './components/Checkout';
 import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
-// Fix: Import AdminDashboard which was missing causing errors on lines 128 and 145
 import AdminDashboard from './components/AdminDashboard';
 import { PageTransition } from './components/ui/PageTransition';
 import { Product } from './types';

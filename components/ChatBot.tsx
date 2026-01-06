@@ -12,7 +12,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
   const { products, addToCart } = useShop();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'Hello! I am **Flora**, your signature scent consultant. ✦ Which mood or occasion are we matching today? ✨', timestamp: new Date() }
+    { role: 'model', text: 'Bonjour! I am **Flora**, your signature scent consultant for all of Ghana. ✦ Whether you are in the misty Volta mountains, the dry North, or the humid coast, I can find your perfect match. Where are we heading today? ✨', timestamp: new Date() }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
