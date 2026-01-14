@@ -8,14 +8,14 @@ const recommendProductsDeclaration: FunctionDeclaration = {
   name: 'recommendProducts',
   parameters: {
     type: Type.OBJECT,
-    description: 'Recommend specific perfumes from the catalog.',
+    description: 'Call this to show specific perfume cards from the catalog to the user.',
     properties: {
       productIds: {
         type: Type.ARRAY,
-        description: 'Array of product IDs.',
+        description: 'Array of product IDs found in the catalog.',
         items: { type: Type.STRING },
       },
-      reason: { type: Type.STRING, description: 'Brief expert justification.' },
+      reason: { type: Type.STRING, description: 'A 1-sentence internal reason for these picks.' },
     },
     required: ['productIds'],
   },
@@ -36,27 +36,23 @@ export const streamChatResponse = async (
       category: p.category
     }));
 
-    // Cap history to keep context clean and avoid token-limit hitches
     const cappedHistory = history.slice(-10);
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const chat = ai.chats.create({
       model: MODEL_NAME,
       config: {
-        systemInstruction: `You are 'Flora', the Signature Scent Consultant for Immense Perfumery, serving all of Ghana.
+        systemInstruction: `You are 'Flora', the Senior Scent Consultant at Immense Perfumery in Accra.
 
-STRICT BEHAVIORAL RULES:
-1. **CONVERSATIONAL MEMORY**: You MUST mention the names of the perfumes you recommend in your text response.
-2. **CLIMATE EXPERTISE**: You are an expert on Ghana's diverse geography. 
-   - For the **Dry North** (Tamale/Savannah) or **Harmattan season**: Recommend rich, moisturizing ouds, ambers, and spicy notes that cling to the skin in dry air.
-   - For the **Humid Coast** (Accra/Takoradi/Cape Coast): Prioritize high-sillage, fresh, or aquatic scents that don't turn cloying in humidity.
-   - For the **Cool Highlands** (Volta/Eastern region): Suggest sophisticated florals and woody notes that bloom beautifully in the mist.
-3. **CONCISENESS**: Limit your preamble to 2 sentences. Be warm, professional, and culturally aware.
+COMMUNICATION PROTOCOL:
+1. **ALWAYS SPEAK**: You are a consultant, not a database. You MUST always write a conversational response. Never just show products.
+2. **THE 'SPEAK FIRST' RULE**: If you recommend products using the 'recommendProducts' tool, you MUST explain your choices in text FIRST. Talk about the notes (e.g., the sharpness of citrus, the depth of oud) and why they fit the user's request.
+3. **NO BOT-SPEAK**: Avoid "I'd be happy to," "Certainly," or "Here are your results." Start naturally like a high-end boutique owner.
+   - Example: "The afternoon sun in Accra requires something that doesn't just evaporate—I've pulled a few scents with incredible staying power for you..."
+4. **LOCAL CONTEXT**: You know we are in ACP Estate, Accra. You understand the Ghanaian climate (Coastal humidity vs. Northern Harmattan).
+5. **LANGUAGE**: English only.
 
-RESPONSE PATTERN:
-- User asks for a scent -> Ask where they are if not specified -> "I recommend **[Name 1]** and **[Name 2]**. In the [Region] heat/cool, these notes will [Reason]." -> You call 'recommendProducts'.
-
-CATALOG DATA:
+CATALOG:
 ${JSON.stringify(productList)}`,
         tools: [{ functionDeclarations: [recommendProductsDeclaration] }],
       },
@@ -66,21 +62,17 @@ ${JSON.stringify(productList)}`,
     const result = await chat.sendMessageStream({ message: newMessage });
     for await (const chunk of result) {
       if (!chunk) continue;
-      
       const candidate = chunk.candidates?.[0];
       const text = chunk.text || "";
       const fCalls = chunk.functionCalls;
       const grounding = candidate?.groundingMetadata;
       
-      // Even if text is empty (e.g. tool call start), we trigger the update to handle tools/grounding
+      // Pass the text and function calls to the UI
       onChunk(text, grounding, fCalls);
     }
   } catch (error: any) {
     console.error("Flora Connection Error:", error);
-    const friendlyError = error?.status === 429 
-      ? "\n✦ *Pardon me, I'm a bit overwhelmed with requests at the moment. Please wait a second.* ✦"
-      : "\n✦ *Pardon me, I lost the trail of that scent for a moment. Let me refocus.* ✦";
-    onChunk(friendlyError);
+    onChunk("\n✦ *Forgive me, the scent trail has gone cold. How else can I assist you?* ✦");
   }
 };
 
@@ -98,7 +90,7 @@ export const analyzeImage = async (base64Image: string, mimeType: string, produc
       contents: {
         parts: [
           { inlineData: { mimeType, data: base64Image } },
-          { text: `You are Flora. Analyze this image mood. Suggest 2 perfumes from CATALOG: ${JSON.stringify(productList)}. Mention their names. Consider how the mood fits different Ghanaian environments (dry north, humid south, or cool mountains).` },
+          { text: `Analyze this image mood and suggest 2 perfumes from CATALOG: ${JSON.stringify(productList)}. No French. Be sophisticated.` },
         ],
       },
       config: {
@@ -106,17 +98,14 @@ export const analyzeImage = async (base64Image: string, mimeType: string, produc
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            description: { type: Type.STRING, description: "One sentence mood analysis naming the picks and the Ghanaian setting they suit best." },
+            description: { type: Type.STRING, description: "Professional analysis." },
             recommendedProductIds: { type: Type.ARRAY, items: { type: Type.STRING } }
           }
         }
       }
     });
-
-    const text = response.text || '{"description": "A sophisticated vibe that deserves a matching signature scent.", "recommendedProductIds": []}';
-    return JSON.parse(text);
+    return JSON.parse(response.text || '{}');
   } catch (error) {
-    console.error("Image Analysis Hitch:", error);
-    return { description: "✦ My apologies, the vision is a bit blurred. Could you try uploading that again? ✦", recommendedProductIds: [] };
+    return { description: "✦ I am having trouble seeing that clearly. Let's try another image. ✦", recommendedProductIds: [] };
   }
 };

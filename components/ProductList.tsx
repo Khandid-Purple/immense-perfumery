@@ -4,6 +4,7 @@ import { Product } from '../types';
 import { useShop } from '../context/ShopContext';
 import { useToast } from '../context/ToastContext';
 import { Marquee } from './ui/Marquee';
+import { Button } from './ui/Button';
 
 interface ProductListProps {
   onProductSelect: (product: Product) => void;
@@ -101,6 +102,12 @@ const ProductList: React.FC<ProductListProps> = ({ onProductSelect, onQuickView 
     showToast(willAdd ? 'Added to wishlist' : 'Removed from wishlist', 'info');
   };
 
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('All');
+    setSortBy('featured');
+  };
+
   if (isLoadingProducts) {
     return (
       <section id="products" className="py-20 w-full max-w-7xl mx-auto px-6 text-center">
@@ -174,8 +181,15 @@ const ProductList: React.FC<ProductListProps> = ({ onProductSelect, onQuickView 
         </div>
 
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-white/50 dark:bg-white/5 rounded-3xl border border-dashed border-gray-300 dark:border-white/10">
-            <p className="text-gray-500">No perfumes found matching your criteria</p>
+          <div className="text-center py-20 bg-white/50 dark:bg-white/5 rounded-[3rem] border border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center gap-6 animate-fade-in">
+            <div className="w-20 h-20 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center text-gray-400">
+               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </div>
+            <div>
+              <p className="text-gray-800 dark:text-white font-bold text-xl mb-2">No scents matched your search</p>
+              <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters or keyword to reveal our hidden gems.</p>
+            </div>
+            <Button onClick={resetFilters} variant="outline" className="mt-2">Clear all filters</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

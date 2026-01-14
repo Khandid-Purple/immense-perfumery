@@ -19,11 +19,11 @@ const Contact: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulate form submission
-    showToast('Your message has been received. Our concierge will contact you shortly.', 'success');
+    showToast('Your message has been received. Our team will contact you shortly.', 'success');
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -33,7 +33,7 @@ const Contact: React.FC = () => {
     "name": "Immense Perfumery Collects",
     "image": "https://images.unsplash.com/photo-1541643600914-78b084683601",
     "telephone": "+233 24 280 2741",
-    "email": "concierge@immenseperfumery.com",
+    "email": "hello@immenseperfumery.com",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "ACP Estate",
@@ -60,14 +60,14 @@ const Contact: React.FC = () => {
   return (
     <div className="animate-fade-in py-16 px-6 max-w-7xl mx-auto">
       <SEO 
-        title="Concierge & Contact" 
+        title="Customer Care & Contact" 
         description="Connect with Immense Perfumery in ACP Estate, Accra. Consult with our scent experts via WhatsApp or visit our boutique."
         schema={localBusinessSchema}
       />
       
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-brand-pink font-bold tracking-[0.3em] uppercase text-xs mb-4 opacity-80">Personalized Service</span>
-        <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-6 transition-colors">How can we assist you?</h1>
+        <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-6 transition-colors">How can we help?</h1>
         <div className="w-20 h-1 bg-brand-pink/20 rounded-full"></div>
       </div>
 
@@ -103,7 +103,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-[10px] text-gray-500 uppercase font-bold">Email Us</p>
-                    <p className="text-sm font-medium">concierge@immenseperfumery.com</p>
+                    <p className="text-sm font-medium">hello@immenseperfumery.com</p>
                   </div>
                 </div>
 
@@ -201,7 +201,7 @@ const Contact: React.FC = () => {
                        onChange={handleChange as any}
                        className="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-black/20 border-2 border-transparent focus:border-brand-pink/30 focus:bg-white dark:focus:bg-black/40 transition-all text-gray-900 dark:text-white appearance-none"
                      >
-                       <option value="">Select a category</option>
+                       <option value="" disabled hidden>Select a category</option>
                        <option value="Scent Consultation">Scent Consultation</option>
                        <option value="Order Status">Order Status</option>
                        <option value="Corporate Gifting">Corporate Gifting</option>
@@ -218,7 +218,7 @@ const Contact: React.FC = () => {
                        value={formData.message}
                        onChange={handleChange}
                        className="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-black/20 border-2 border-transparent focus:border-brand-pink/30 focus:bg-white dark:focus:bg-black/40 transition-all resize-none text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700"
-                       placeholder="How can our concierge help you today?"
+                       placeholder="How can we help you today?"
                      ></textarea>
                  </div>
                  <Button type="submit" className="w-full py-5 text-lg font-serif tracking-widest shadow-brand-pink/20 uppercase">

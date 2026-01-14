@@ -146,6 +146,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, onProductSelect }) => {
             </div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 opacity-40 animate-bounce">
+         <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">Scroll to Explore</span>
+         <svg className="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7" />
+         </svg>
+      </div>
     </section>
   );
 };
