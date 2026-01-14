@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SEO } from './SEO';
 import { Button } from './ui/Button';
 import { useShop } from '../context/ShopContext';
@@ -67,23 +67,44 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
     switch (step) {
       case 'start':
         return (
-          <div className="animate-fade-in w-full max-w-4xl relative">
-            {/* Background Blobs for Luxury Effect */}
-            <div className="absolute -top-40 -left-20 w-[600px] h-[600px] bg-brand-pink/5 dark:bg-brand-pink/10 rounded-full blur-[100px] -z-10"></div>
-            
-            <div className="text-left space-y-6 md:space-y-8">
-              <div className="w-16 h-16 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center text-brand-pink mb-4 shadow-sm border border-brand-pink/10">
+          <div className="animate-fade-in w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            {/* Left Content: Strictly Aligned */}
+            <div className="flex-1 text-left space-y-6 md:space-y-8 z-10">
+              <div className="w-16 h-16 bg-brand-pink/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-brand-pink mb-4 shadow-xl border border-brand-pink/30 animate-pulse">
                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7 12 7 12 7z"></path></svg>
               </div>
               
-              <div className="max-w-2xl">
-                <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 dark:text-white mb-6 leading-tight">Flora's Gift Concierge</h1>
-                <p className="text-gray-500 dark:text-gray-400 text-xl font-light leading-relaxed mb-10 max-w-xl">
+              <div className="max-w-xl">
+                <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 dark:text-white mb-6 leading-[1.1]">Flora's Gift Concierge</h1>
+                <p className="text-gray-500 dark:text-gray-300 text-xl font-light leading-relaxed mb-10">
                   Answer 3 simple questions and our Senior Scent Consultant will curate the perfect signature gift.
                 </p>
-                <Button onClick={() => setStep('recipient')} className="px-12 py-5 text-lg font-bold shadow-2xl shadow-brand-pink/30 hover:scale-105 transition-transform">
-                  Begin Consultation
-                </Button>
+                <div className="relative inline-block group">
+                  <div className="absolute -inset-2 bg-brand-pink/20 rounded-full blur-xl group-hover:bg-brand-pink/40 transition-all"></div>
+                  <Button onClick={() => setStep('recipient')} className="relative px-12 py-5 text-lg font-bold shadow-2xl shadow-brand-pink/30 hover:scale-105 active:scale-95 transition-all">
+                    Begin Consultation
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Decorative Section: Visual Balance */}
+            <div className="flex-1 w-full relative hidden lg:block">
+              <div className="relative z-10 w-full h-[450px] flex items-center justify-center">
+                 <div className="absolute inset-0 bg-brand-pink/10 rounded-full blur-[120px] animate-pulse"></div>
+                 {/* Luxury Set Presentation */}
+                 <div className="relative w-[85%] aspect-square flex items-center justify-center">
+                    <img 
+                      src="https://images.unsplash.com/photo-1594035910387-fea4779426e9?q=80&w=1000&auto=format&fit=crop" 
+                      alt="Signature Gift Set" 
+                      className="w-full h-auto rounded-[4rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.5)] transform -rotate-3 hover:rotate-0 transition-transform duration-1000 border border-white/20"
+                    />
+                    {/* Floating Accent Circle (Lottie-like effect) */}
+                    <div className="absolute -top-6 -right-6 w-28 h-28 bg-white/10 dark:bg-white/5 backdrop-blur-2xl border border-white/20 rounded-full flex flex-col items-center justify-center animate-bounce shadow-2xl" style={{ animationDuration: '3s' }}>
+                       <span className="text-brand-pink text-3xl mb-1">✨</span>
+                       <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">Hand Picked</span>
+                    </div>
+                 </div>
               </div>
             </div>
           </div>
@@ -91,7 +112,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
 
       case 'recipient':
         return (
-          <div className="animate-slide-up max-w-4xl mx-auto text-center">
+          <div className="animate-slide-up max-w-4xl mx-auto text-center w-full">
             <span className="text-brand-pink font-bold uppercase tracking-widest text-xs mb-4 block">Question 01</span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-12">Who are we celebrating?</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -104,7 +125,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
 
       case 'vibe':
         return (
-          <div className="animate-slide-up max-w-4xl mx-auto text-center">
+          <div className="animate-slide-up max-w-4xl mx-auto text-center w-full">
              <span className="text-brand-pink font-bold uppercase tracking-widest text-xs mb-4 block">Question 02</span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-12">What is their scent personality?</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -124,7 +145,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
 
       case 'occasion':
         return (
-          <div className="animate-slide-up max-w-4xl mx-auto text-center">
+          <div className="animate-slide-up max-w-4xl mx-auto text-center w-full">
              <span className="text-brand-pink font-bold uppercase tracking-widest text-xs mb-4 block">Question 03</span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-12">What is the occasion?</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -137,7 +158,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
 
       case 'calculating':
         return (
-          <div className="text-center animate-fade-in flex flex-col items-center">
+          <div className="text-center animate-fade-in flex flex-col items-center w-full">
              <div className="w-24 h-24 relative mb-10">
                 <div className="absolute inset-0 border-4 border-brand-pink/10 rounded-full"></div>
                 <div className="absolute inset-0 border-4 border-brand-pink rounded-full border-t-transparent animate-spin"></div>
@@ -152,7 +173,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
 
       case 'result':
         return (
-          <div className="animate-fade-in max-w-6xl mx-auto">
+          <div className="animate-fade-in max-w-6xl mx-auto w-full">
             <div className="bg-white dark:bg-dark-card rounded-[3rem] p-10 md:p-16 border border-gray-100 dark:border-white/10 shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-pink/5 rounded-full blur-3xl"></div>
                <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
@@ -172,9 +193,6 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
                        <div className="aspect-[3/4] bg-gray-50 dark:bg-black/20 rounded-[2.5rem] p-8 flex items-center justify-center relative mb-6 border border-transparent group-hover:border-brand-pink/30 transition-all overflow-hidden">
                           <img src={product.image} alt={product.name} className="h-full object-contain group-hover:scale-110 transition-transform duration-700 z-10" />
                           <div className="absolute inset-0 bg-brand-pink/0 group-hover:bg-brand-pink/5 transition-colors"></div>
-                          <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-dark-card/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[9px] font-bold text-brand-pink uppercase tracking-widest z-20 border border-brand-pink/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                             Matches: {product.notes?.[0]} & {product.notes?.[1]}
-                          </div>
                        </div>
                        <div className="text-center px-4">
                           <h4 className="font-bold text-xl text-gray-900 dark:text-white mb-2">{product.name}</h4>
@@ -216,7 +234,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
         </div>
       )}
 
-      <section className="min-h-[450px] flex items-center justify-start mb-32">
+      <section className="min-h-[500px] flex items-center justify-start mb-32 w-full">
         {renderStep()}
       </section>
 
@@ -232,7 +250,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-pink/0 to-brand-pink/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-700 relative z-10">{occ.icon}</div>
                 <h3 className="font-bold text-xl text-gray-800 dark:text-white mb-2 relative z-10">{occ.name}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-8 leading-relaxed line-clamp-2 relative z-10">{occ.desc}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-300 mb-8 leading-relaxed line-clamp-2 relative z-10">{occ.desc}</p>
                 <span className="mt-auto text-[10px] text-brand-pink uppercase font-bold tracking-widest border-b border-brand-pink/30 pb-1 group-hover:border-brand-pink transition-all relative z-10">Shop Selection</span>
              </button>
            ))}
@@ -245,7 +263,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
             <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-pink/10 rounded-full blur-[120px]"></div>
             <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-8 block relative z-10">Luxury Unboxing</span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-8 relative z-10">Signature Wrap</h2>
-            <p className="text-gray-400 mb-12 leading-relaxed relative z-10 text-lg font-light">Elevate your gesture. Our premium wrapping service includes a heavy-weight matte box, silk ribbon, and a hand-calligraphed envelope.</p>
+            <p className="text-gray-300 mb-12 leading-relaxed relative z-10 text-lg font-light">Elevate your gesture. Our premium wrapping service includes a heavy-weight matte box, silk ribbon, and a hand-calligraphed envelope.</p>
             <div className="flex items-center gap-6 relative z-10 bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-sm self-start">
                <div className="w-12 h-12 bg-brand-pink/10 text-brand-pink rounded-xl flex items-center justify-center border border-brand-pink/20"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7 12 7 12 7z"></path></svg></div>
                <div><p className="font-bold uppercase tracking-[0.2em] text-xs">Included with Gift Option</p><p className="text-[10px] text-gray-500">Available at Checkout</p></div>
@@ -255,7 +273,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
          <div className="bg-white dark:bg-dark-card p-12 md:p-20 rounded-[5rem] border border-gray-100 dark:border-white/10 shadow-xl flex flex-col justify-center text-center items-center">
             <div className="w-16 h-1 bg-brand-pink/20 rounded-full mb-10"></div>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-8">Digital Gift Card</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-12 leading-relaxed text-lg font-light max-w-sm">The freedom of choice is the ultimate luxury. Delivered via email instantly.</p>
+            <p className="text-gray-500 dark:text-gray-300 mb-12 leading-relaxed text-lg font-light max-w-sm">The freedom of choice is the ultimate luxury. Delivered via email instantly.</p>
             <Button className="px-20 py-5 text-base font-bold shadow-2xl shadow-brand-pink/20 uppercase tracking-widest">Buy Gift Card</Button>
          </div>
       </div>
