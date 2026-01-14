@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/Button';
 import { useToast } from '../context/ToastContext';
@@ -8,9 +8,10 @@ import DeliveryMap from './DeliveryMap';
 import { GHANA_REGIONS } from '../services/api';
 
 const Account: React.FC = () => {
-  const { user, logout, updateProfile, addAddress, removeAddress, cancelOrder, refreshUser } = useAuth();
+  const { user, logout, updateProfile, addAddress, editAddress, removeAddress, cancelOrder, refreshUser } = useAuth();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'profile' | 'addresses' | 'orders'>('profile');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Refresh user data when orders tab is active to get latest status updates
   useEffect(() => {
@@ -25,7 +26,8 @@ const Account: React.FC = () => {
 
   // Address Form State
   const [showAddressForm, setShowAddressForm] = useState(false);
-  const [newAddress, setNewAddress] = useState<Omit<Address, 'id'>>({
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [addressForm, setAddressForm] = useState<Omit<Address, 'id'>>({
     label: '',
     firstName: '',
     lastName: '',
@@ -53,11 +55,58 @@ const Account: React.FC = () => {
     showToast('Profile updated successfully');
   };
 
-  const handleAddAddress = (e: React.FormEvent) => {
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        showToast('Image too large. Please use an image under 1MB.', 'info');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateProfile({ avatar: reader.result as string });
+        showToast('Profile picture updated!');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleOpenEditAddress = (addr: Address) => {
+    setEditingAddressId(addr.id);
+    setAddressForm({
+      label: addr.label,
+      firstName: addr.firstName,
+      lastName: addr.lastName,
+      street: addr.street,
+      digitalAddress: addr.digitalAddress || '',
+      region: addr.region,
+      city: addr.city,
+      zip: addr.zip || '',
+      phone: addr.phone
+    });
+    setShowAddressForm(true);
+  };
+
+  const handleAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addAddress(newAddress);
+    if (editingAddressId) {
+      editAddress(editingAddressId, addressForm);
+      showToast('Address updated successfully');
+    } else {
+      addAddress(addressForm);
+      showToast('Address added successfully');
+    }
+    closeAddressForm();
+  };
+
+  const closeAddressForm = () => {
     setShowAddressForm(false);
-    setNewAddress({
+    setEditingAddressId(null);
+    setAddressForm({
       label: '',
       firstName: '',
       lastName: '',
@@ -68,7 +117,6 @@ const Account: React.FC = () => {
       zip: '',
       phone: ''
     });
-    showToast('Address added successfully');
   };
 
   const handleCancelOrderClick = (orderId: string) => {
@@ -122,9 +170,29 @@ const Account: React.FC = () => {
         
         {/* Sidebar */}
         <div className="w-full md:w-64 flex flex-col gap-2">
-          <div className="bg-white dark:bg-dark-card p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 mb-4 text-center">
-             <div className="w-20 h-20 bg-brand-pink text-white rounded-full flex items-center justify-center text-3xl font-serif font-bold mx-auto mb-4">
-               {user.name.charAt(0).toUpperCase()}
+          <div className="bg-white dark:bg-dark-card p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 mb-4 text-center group">
+             <div className="relative w-20 h-20 mx-auto mb-4">
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-20 h-20 rounded-full object-cover border-2 border-brand-pink" />
+                ) : (
+                  <div className="w-20 h-20 bg-brand-pink text-white rounded-full flex items-center justify-center text-3xl font-serif font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <button 
+                  onClick={handleAvatarClick}
+                  className="absolute bottom-0 right-0 w-7 h-7 bg-white dark:bg-dark-card border border-gray-100 dark:border-white/10 rounded-full flex items-center justify-center text-brand-pink shadow-md hover:scale-110 transition-transform"
+                  title="Change Avatar"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleAvatarChange} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
              </div>
              <h2 className="font-bold text-gray-900 dark:text-white">{user.name}</h2>
              <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
@@ -157,7 +225,7 @@ const Account: React.FC = () => {
               <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-6">Profile Information</h2>
               <form onSubmit={handleUpdateProfile} className="space-y-6 max-w-md">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Full Name</label>
                   <input 
                     type="text" 
                     value={name}
@@ -166,7 +234,7 @@ const Account: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Email Address</label>
                   <input 
                     type="email" 
                     value={email}
@@ -191,48 +259,57 @@ const Account: React.FC = () => {
               </div>
 
               {showAddressForm ? (
-                 <form onSubmit={handleAddAddress} className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl mb-6 border border-gray-100 dark:border-white/10">
-                    <h3 className="font-bold text-gray-800 dark:text-white mb-4">New Address</h3>
+                 <form onSubmit={handleAddressSubmit} className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl mb-6 border border-gray-100 dark:border-white/10 animate-slide-up">
+                    <h3 className="font-bold text-gray-800 dark:text-white mb-4">
+                      {editingAddressId ? 'Edit Address' : 'New Address'}
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                       <input placeholder="Label (e.g. Home)" required value={newAddress.label} onChange={e => setNewAddress({...newAddress, label: e.target.value})} className={inputClass} />
-                       <input placeholder="Phone" required value={newAddress.phone} onChange={e => setNewAddress({...newAddress, phone: e.target.value})} className={inputClass} />
-                       <input placeholder="First Name" required value={newAddress.firstName} onChange={e => setNewAddress({...newAddress, firstName: e.target.value})} className={inputClass} />
-                       <input placeholder="Last Name" required value={newAddress.lastName} onChange={e => setNewAddress({...newAddress, lastName: e.target.value})} className={inputClass} />
+                       <input placeholder="Label (e.g. Home)" required value={addressForm.label} onChange={e => setAddressForm({...addressForm, label: e.target.value})} className={inputClass} />
+                       <input placeholder="Phone" required value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className={inputClass} />
+                       <input placeholder="First Name" required value={addressForm.firstName} onChange={e => setAddressForm({...addressForm, firstName: e.target.value})} className={inputClass} />
+                       <input placeholder="Last Name" required value={addressForm.lastName} onChange={e => setAddressForm({...addressForm, lastName: e.target.value})} className={inputClass} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <select 
                         required 
-                        value={newAddress.region} 
-                        onChange={e => setNewAddress({...newAddress, region: e.target.value})} 
+                        value={addressForm.region} 
+                        onChange={e => setAddressForm({...addressForm, region: e.target.value})} 
                         className={inputClass}
                       >
                         {GHANA_REGIONS.map(region => (
                           <option key={region} value={region}>{region}</option>
                         ))}
                       </select>
-                      <input placeholder="Digital Address (e.g. GA-123-4567)" value={newAddress.digitalAddress} onChange={e => setNewAddress({...newAddress, digitalAddress: e.target.value})} className={inputClass} />
+                      <input placeholder="Digital Address (e.g. GA-123-4567)" value={addressForm.digitalAddress} onChange={e => setAddressForm({...addressForm, digitalAddress: e.target.value})} className={inputClass} />
                     </div>
                     <div className="space-y-4 mb-6">
-                      <input placeholder="Street Address" required value={newAddress.street} onChange={e => setNewAddress({...newAddress, street: e.target.value})} className={inputClass} />
+                      <input placeholder="Street Address" required value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className={inputClass} />
                       <div className="grid grid-cols-2 gap-4">
-                        <input placeholder="City / Town" required value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} className={inputClass} />
-                        <input placeholder="Postal Code (Optional)" value={newAddress.zip} onChange={e => setNewAddress({...newAddress, zip: e.target.value})} className={inputClass} />
+                        <input placeholder="City / Town" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className={inputClass} />
+                        <input placeholder="Postal Code (Optional)" value={addressForm.zip} onChange={e => setAddressForm({...addressForm, zip: e.target.value})} className={inputClass} />
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button type="submit">Save Address</Button>
-                      <button type="button" onClick={() => setShowAddressForm(false)} className="px-6 py-2 rounded-full font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">Cancel</button>
+                      <Button type="submit">
+                        {editingAddressId ? 'Update Address' : 'Save Address'}
+                      </Button>
+                      <button type="button" onClick={closeAddressForm} className="px-6 py-2 rounded-full font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">Cancel</button>
                     </div>
                  </form>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {user.addresses.map((addr) => (
-                    <div key={addr.id} className="border border-gray-200 dark:border-white/10 rounded-2xl p-5 relative group hover:border-brand-pink transition-colors">
+                    <div key={addr.id} className="border border-gray-200 dark:border-white/10 rounded-2xl p-5 relative group hover:border-brand-pink transition-all">
                       <div className="flex justify-between items-start mb-2">
-                        <span className="bg-pink-100 dark:bg-pink-900/30 text-brand-pink text-xs font-bold px-2 py-1 rounded">{addr.label}</span>
-                        <button onClick={() => removeAddress(addr.id)} className="text-gray-400 hover:text-red-500">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </button>
+                        <span className="bg-pink-100 dark:bg-pink-900/30 text-brand-pink text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">{addr.label}</span>
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => handleOpenEditAddress(addr)} className="text-gray-400 hover:text-brand-pink transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                          </button>
+                          <button onClick={() => removeAddress(addr.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                          </button>
+                        </div>
                       </div>
                       <p className="font-bold text-gray-800 dark:text-white">{addr.firstName} {addr.lastName}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{addr.street}</p>
@@ -295,7 +372,7 @@ const Account: React.FC = () => {
                                {order.status !== 'Cancelled' && (
                                  <button 
                                   onClick={() => setTrackingOrderId(trackingOrderId === order.id ? null : order.id)}
-                                  className="text-xs flex items-center gap-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 px-3 py-1 rounded-full hover:bg-gray-50 dark:hover:bg-white/5"
+                                  className="text-xs flex items-center gap-1 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 px-3 py-1 rounded-full hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                  >
                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
                                    {trackingOrderId === order.id ? 'Hide Map' : 'Track'}

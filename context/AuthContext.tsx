@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
   updateProfile: (data: Partial<User>) => void;
   addAddress: (address: Omit<Address, 'id'>) => void;
+  editAddress: (id: string, address: Omit<Address, 'id'>) => void;
   removeAddress: (id: string) => void;
   cancelOrder: (orderId: string) => void;
   refreshUser: () => Promise<void>;
@@ -96,6 +97,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const editAddress = async (id: string, addressData: Omit<Address, 'id'>) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        addresses: user.addresses.map(a => a.id === id ? { ...addressData, id } : a)
+      };
+      await api.auth.updateProfile(updatedUser);
+      setUser(updatedUser);
+    }
+  };
+
   const removeAddress = async (id: string) => {
     if (user) {
       const updatedUser = { ...user, addresses: user.addresses.filter(a => a.id !== id) };
@@ -125,6 +137,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       logout,
       updateProfile,
       addAddress,
+      editAddress,
       removeAddress,
       cancelOrder,
       refreshUser,

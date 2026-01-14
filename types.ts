@@ -68,6 +68,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  avatar?: string; // Base64 or URL
   role: 'customer' | 'admin';
   addresses: Address[];
   orders: Order[];

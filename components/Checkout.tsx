@@ -4,7 +4,7 @@ import { useShop } from '../context/ShopContext';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/Button';
-import { Order, CartItem } from '../types';
+import { Order, CartItem, Address } from '../types';
 import Confetti from './ui/Confetti';
 import { GHANA_REGIONS, api } from '../services/api';
 
@@ -48,16 +48,36 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
     firstName: '', lastName: '', address: '', digitalAddress: '', region: 'Greater Accra', city: '', phone: '', email: ''
   });
 
+  // Auto-fill from user profile and default address
   useEffect(() => {
     if (user) {
-      setFormData(p => ({ 
-        ...p, 
+      const defaultAddress = user.addresses.length > 0 ? user.addresses[0] : null;
+      setFormData({ 
         email: user.email, 
-        firstName: user.name.split(' ')[0], 
-        lastName: user.name.split(' ').slice(1).join(' ') 
-      }));
+        firstName: defaultAddress?.firstName || user.name.split(' ')[0], 
+        lastName: defaultAddress?.lastName || user.name.split(' ').slice(1).join(' '),
+        phone: defaultAddress?.phone || '',
+        address: defaultAddress?.street || '',
+        digitalAddress: defaultAddress?.digitalAddress || '',
+        region: defaultAddress?.region || 'Greater Accra',
+        city: defaultAddress?.city || ''
+      });
     }
   }, [user]);
+
+  const applySavedAddress = (addr: Address) => {
+    setFormData({
+      ...formData,
+      firstName: addr.firstName,
+      lastName: addr.lastName,
+      phone: addr.phone,
+      address: addr.street,
+      digitalAddress: addr.digitalAddress || '',
+      region: addr.region,
+      city: addr.city
+    });
+    showToast(`Applied: ${addr.label}`, 'success');
+  };
 
   // Use the direct checkout item if it exists, otherwise use the main cart
   const items = directCheckoutItem ? [directCheckoutItem] : cart;
@@ -166,31 +186,24 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-[80vh] w-full flex flex-col items-center justify-center py-20 px-6 animate-fade-in relative text-center">
-        {/* Background Decorative Globs */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-pink/20 rounded-full blur-[120px]"></div>
            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-400/10 rounded-full blur-[100px]"></div>
         </div>
-        
-        {/* Main Content Card - Perfectly Centered */}
         <div className="w-full max-w-lg bg-white/70 dark:bg-dark-card/70 backdrop-blur-xl p-10 md:p-16 rounded-[3rem] shadow-2xl border border-white/50 dark:border-white/10 flex flex-col items-center justify-center relative z-10 animate-slide-up">
           <div className="w-20 h-20 bg-brand-pink/10 rounded-full flex items-center justify-center mb-8">
              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-pink"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
           </div>
-          
           <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4 text-gray-900 dark:text-white">Sign in to complete your order</h2>
-          
           <p className="text-gray-500 dark:text-gray-400 mb-10 text-lg font-light leading-relaxed">
             Please log in or create an account to secure your signature fragrance and manage your delivery details.
           </p>
-          
           <Button 
             onClick={() => onNavigate('login-from-checkout')} 
             className="w-full sm:w-auto px-12 py-5 text-lg font-bold shadow-xl shadow-brand-pink/30 hover:scale-105 active:scale-95"
           >
             Sign In to Checkout
           </Button>
-          
           <button 
              onClick={() => onNavigate('home')}
              className="mt-8 text-sm font-bold text-gray-400 hover:text-brand-pink transition-colors uppercase tracking-widest"
@@ -219,33 +232,72 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
         {/* Main Content */}
         <div className="w-full lg:w-2/3 space-y-8">
           
+          {/* Saved Addresses Quick Select */}
+          {user && user.addresses.length > 0 && (
+            <section className="bg-white/40 dark:bg-dark-card/40 p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm animate-fade-in">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Saved Addresses</h3>
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {user.addresses.map(addr => (
+                  <button 
+                    key={addr.id}
+                    onClick={() => applySavedAddress(addr)}
+                    className="flex-shrink-0 px-4 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-300 hover:border-brand-pink hover:text-brand-pink transition-all"
+                  >
+                    {addr.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* 1. Shipping Information */}
-          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
+          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm transition-colors">
             <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
               <span className="w-8 h-8 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-bold">1</span>
               Delivery Details
             </h2>
             <form id="checkout-form" onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input required placeholder="First Name" value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className={inputClass} />
-                <input required placeholder="Last Name" value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className={inputClass} />
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">First Name</label>
+                  <input required placeholder="First Name" value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Last Name</label>
+                  <input required placeholder="Last Name" value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className={inputClass} />
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input required placeholder="Phone (e.g. 055...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className={inputClass} />
-                <input placeholder="Digital Address (GA-123-4567)" value={formData.digitalAddress} onChange={e => setFormData({...formData, digitalAddress: e.target.value})} className={inputClass} />
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Phone</label>
+                  <input required placeholder="Phone (e.g. 055...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Digital Address</label>
+                  <input placeholder="Digital Address (GA-123-4567)" value={formData.digitalAddress} onChange={e => setFormData({...formData, digitalAddress: e.target.value})} className={inputClass} />
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <select value={formData.region} onChange={e => setFormData({...formData, region: e.target.value})} className={inputClass}>
-                  {GHANA_REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
-                </select>
-                <input required placeholder="City / Town" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className={inputClass} />
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Region</label>
+                  <select value={formData.region} onChange={e => setFormData({...formData, region: e.target.value})} className={inputClass}>
+                    {GHANA_REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">City / Town</label>
+                  <input required placeholder="City / Town" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className={inputClass} />
+                </div>
               </div>
-              <input required placeholder="Street Address / Landmarks" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className={inputClass} />
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Street Address</label>
+                <input required placeholder="Street Address / Landmarks" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className={inputClass} />
+              </div>
             </form>
           </section>
 
           {/* 2. Shipping Methods */}
-          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
+          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm transition-colors">
             <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
               <span className="w-8 h-8 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-bold">2</span>
               Shipping Method
@@ -280,7 +332,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
           </section>
 
           {/* 3. Special Instructions */}
-          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm">
+          <section className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm transition-colors">
              <h2 className="text-xl font-serif font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
                 <span className="w-8 h-8 rounded-full bg-brand-pink/10 text-brand-pink flex items-center justify-center text-sm font-bold">3</span>
                 Special Touches
@@ -289,7 +341,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
                 <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-transparent transition-all">
                   <div className="flex items-center gap-4 flex-1">
                      <div className="w-12 h-12 rounded-xl bg-brand-pink/10 text-brand-pink flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7 12 7 12 7z"></path></svg>
                      </div>
                      <div>
                         <h3 className="font-bold text-gray-900 dark:text-white text-sm">Signature Gift Wrapping</h3>
@@ -306,7 +358,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
 
                 <div className="space-y-2">
                    <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order Note / Special Requests</label>
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Order Note / Special Requests</label>
                       <span className={`text-[9px] font-bold ${orderNote.length > 250 ? 'text-brand-pink' : 'text-gray-400'}`}>
                          {orderNote.length} / 300
                       </span>
@@ -328,7 +380,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
           <div className="bg-white dark:bg-dark-card p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-xl sticky top-24 transition-colors">
             <h2 className="text-xl font-serif font-bold mb-6 text-gray-900 dark:text-white">Order Summary</h2>
 
-            {/* Free Shipping Progress */}
             <div className="mb-8 p-4 bg-brand-pink/5 rounded-2xl border border-brand-pink/10">
                <div className="flex justify-between text-xs font-bold mb-2">
                   <span className="text-gray-600 dark:text-gray-300">Free Shipping Progress</span>
@@ -373,7 +424,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
                ))}
             </div>
 
-            {/* Promo Code Input */}
             <form onSubmit={handleApplyPromo} className="flex gap-2 mb-8">
                <input 
                  placeholder="Promo Code" 
@@ -390,19 +440,19 @@ const Checkout: React.FC<CheckoutProps> = ({ onOrderComplete, onNavigate }) => {
                </button>
             </form>
 
-            <div className="space-y-3 border-t border-gray-100 dark:border-white/10 pt-6 mb-8">
+            <div className="space-y-3 border-t border-gray-100 dark:border-white/10 pt-6 mb-8 text-gray-900 dark:text-white">
                <div className="flex justify-between text-sm">
                  <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
-                 <span className="font-medium text-gray-900 dark:text-white">₵{subtotal.toLocaleString()}</span>
+                 <span className="font-medium">₵{subtotal.toLocaleString()}</span>
                </div>
                <div className="flex justify-between text-sm">
                  <span className="text-gray-500 dark:text-gray-400">Shipping ({selectedMethod.label})</span>
-                 <span className="font-medium text-gray-900 dark:text-white">{shippingCost === 0 ? 'FREE' : `₵${shippingCost}`}</span>
+                 <span className="font-medium">{shippingCost === 0 ? 'FREE' : `₵${shippingCost}`}</span>
                </div>
                {giftWrap && (
                  <div className="flex justify-between text-sm">
                    <span className="text-gray-500 dark:text-gray-400">Gift Wrapping</span>
-                   <span className="font-medium text-gray-900 dark:text-white">₵{settings.giftWrapRate}</span>
+                   <span className="font-medium">₵{settings.giftWrapRate}</span>
                  </div>
                )}
                {appliedPromo && (

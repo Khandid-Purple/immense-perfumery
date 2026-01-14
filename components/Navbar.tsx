@@ -128,9 +128,13 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           {/* Account Button (Desktop) */}
           <button 
             onClick={() => handleNavClick(isAuthenticated ? 'account' : 'login')}
-            className="hidden md:flex items-center gap-2 p-2 px-3 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10"
+            className="hidden md:flex items-center gap-2 p-1.5 px-3 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10"
           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+             {isAuthenticated && user?.avatar ? (
+               <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-lg object-cover border border-brand-pink/20" />
+             ) : (
+               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+             )}
              <span className="text-sm font-medium">{isAuthenticated && user ? user.name.split(' ')[0] : 'Sign In'}</span>
           </button>
           
@@ -166,8 +170,11 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
             
             <button 
                 onClick={() => handleNavClick(isAuthenticated ? 'account' : 'login')}
-                className="text-xl font-medium text-gray-800 dark:text-gray-100 hover:text-brand-pink transition-colors"
+                className="text-xl font-medium text-gray-800 dark:text-gray-100 hover:text-brand-pink transition-colors flex items-center justify-center gap-3"
               >
+                {isAuthenticated && user?.avatar && (
+                  <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-lg object-cover" />
+                )}
                 {isAuthenticated ? 'My Account' : 'Sign In / Register'}
             </button>
            </div>
