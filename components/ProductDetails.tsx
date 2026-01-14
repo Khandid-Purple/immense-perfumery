@@ -139,7 +139,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack, onProd
                    hasPurchased ? (
                      <form onSubmit={handleReviewSubmit} className="bg-pink-50/50 dark:bg-white/5 p-6 rounded-2xl border border-pink-100 dark:border-white/10 shadow-sm mb-10">
                         <div className="flex items-center gap-2 mb-4">
-                           <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                           <div className="w-8 h-8 rounded-full bg-brand-pink flex items-center justify-center shadow-lg shadow-brand-pink/20">
                               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
                            </div>
                            <h4 className="font-bold text-gray-800 dark:text-white">Verified Purchase: Share Your Experience</h4>
@@ -173,7 +173,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack, onProd
                          <div className="flex items-center gap-2">
                            <span className="font-bold text-gray-800 dark:text-white text-sm">{rev.userName}</span>
                            {rev.isVerified && (
-                             <span className="flex items-center gap-1 text-[9px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">
+                             <span className="flex items-center gap-1 text-[9px] bg-pink-100 text-brand-pink px-2 py-0.5 rounded-full font-bold">
                                <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                                VERIFIED BUYER
                              </span>
@@ -200,7 +200,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack, onProd
         </div>
       </div>
 
-      {/* Similar Fragrances Section */}
       {similarProducts.length > 0 && (
         <section className="mt-20 border-t border-gray-100 dark:border-white/5 pt-16">
            <div className="mb-10">

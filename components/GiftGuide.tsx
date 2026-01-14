@@ -50,7 +50,6 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
       setTimeout(() => {
         setStep('result');
         setShowCelebrate(true);
-        // Stop confetti after a few seconds to keep UI clean
         setTimeout(() => setShowCelebrate(false), 5000);
       }, 2000);
     } else {
@@ -68,15 +67,25 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
     switch (step) {
       case 'start':
         return (
-          <div className="text-center animate-fade-in max-w-2xl mx-auto">
-            <div className="w-20 h-20 bg-brand-pink/10 rounded-full flex items-center justify-center mx-auto mb-8 text-brand-pink">
-               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7 12 7 12 7z"></path></svg>
+          <div className="animate-fade-in w-full max-w-4xl relative">
+            {/* Background Blobs for Luxury Effect */}
+            <div className="absolute -top-40 -left-20 w-[600px] h-[600px] bg-brand-pink/5 dark:bg-brand-pink/10 rounded-full blur-[100px] -z-10"></div>
+            
+            <div className="text-left space-y-6 md:space-y-8">
+              <div className="w-16 h-16 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center text-brand-pink mb-4 shadow-sm border border-brand-pink/10">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7 12 7 12 7z"></path></svg>
+              </div>
+              
+              <div className="max-w-2xl">
+                <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 dark:text-white mb-6 leading-tight">Flora's Gift Concierge</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-xl font-light leading-relaxed mb-10 max-w-xl">
+                  Answer 3 simple questions and our Senior Scent Consultant will curate the perfect signature gift.
+                </p>
+                <Button onClick={() => setStep('recipient')} className="px-12 py-5 text-lg font-bold shadow-2xl shadow-brand-pink/30 hover:scale-105 transition-transform">
+                  Begin Consultation
+                </Button>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-6">Flora's Gift Concierge</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-lg font-light leading-relaxed mb-10">
-              Answer 3 simple questions and our Senior Scent Consultant will curate the perfect signature gift.
-            </p>
-            <Button onClick={() => setStep('recipient')} className="px-12 py-5 text-lg font-bold shadow-xl shadow-brand-pink/30">Begin Consultation</Button>
           </div>
         );
 
@@ -87,7 +96,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-12">Who are we celebrating?</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {['For Her', 'For Him', 'Unisex / Neutral'].map(option => (
-                <button key={option} onClick={() => handleNext('recipient', option, 'vibe')} className="p-10 bg-white dark:bg-dark-card rounded-[2.5rem] border-2 border-transparent hover:border-brand-pink shadow-sm transition-all text-xl font-bold text-gray-800 dark:text-white">{option}</button>
+                <button key={option} onClick={() => handleNext('recipient', option, 'vibe')} className="p-10 bg-white dark:bg-dark-card rounded-[2.5rem] border-2 border-transparent hover:border-brand-pink shadow-sm transition-all text-xl font-bold text-gray-800 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink">{option}</button>
               ))}
             </div>
           </div>
@@ -104,7 +113,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
                 { label: 'Classic & Elegant', val: 'Classic', icon: '🏛️' },
                 { label: 'Fresh & Airy', val: 'Fresh', icon: '🍃' }
               ].map(option => (
-                <button key={option.val} onClick={() => handleNext('vibe', option.val, 'occasion')} className="p-10 bg-white dark:bg-dark-card rounded-[2.5rem] border-2 border-transparent hover:border-brand-pink shadow-sm transition-all flex flex-col items-center gap-4">
+                <button key={option.val} onClick={() => handleNext('vibe', option.val, 'occasion')} className="p-10 bg-white dark:bg-dark-card rounded-[2.5rem] border-2 border-transparent hover:border-brand-pink shadow-sm transition-all flex flex-col items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink">
                   <span className="text-4xl">{option.icon}</span>
                   <span className="text-xl font-bold text-gray-800 dark:text-white">{option.label}</span>
                 </button>
@@ -120,7 +129,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-12">What is the occasion?</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {['Birthday', 'Anniversary', 'Work Event', 'Just Because'].map(option => (
-                <button key={option} onClick={() => handleNext('occasion', option, 'result')} className="p-8 bg-white dark:bg-dark-card rounded-3xl border-2 border-transparent hover:border-brand-pink shadow-sm transition-all text-sm font-bold text-gray-800 dark:text-white">{option}</button>
+                <button key={option} onClick={() => handleNext('occasion', option, 'result')} className="p-8 bg-white dark:bg-dark-card rounded-3xl border-2 border-transparent hover:border-brand-pink shadow-sm transition-all text-sm font-bold text-gray-800 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink">{option}</button>
               ))}
             </div>
           </div>
@@ -207,7 +216,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
         </div>
       )}
 
-      <section className="min-h-[450px] flex items-center justify-center mb-32">
+      <section className="min-h-[450px] flex items-center justify-start mb-32">
         {renderStep()}
       </section>
 
@@ -219,7 +228,7 @@ const GiftGuide: React.FC<GiftGuideProps> = ({ onNavigate }) => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
            {occasions.map((occ) => (
-             <button key={occ.name} onClick={() => onNavigate('products')} className="group bg-white dark:bg-dark-card p-10 rounded-[3rem] border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-2xl hover:border-brand-pink/40 transition-all text-center flex flex-col items-center relative overflow-hidden">
+             <button key={occ.name} onClick={() => onNavigate('products')} className="group bg-white dark:bg-dark-card p-10 rounded-[3rem] border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-2xl hover:border-brand-pink/40 transition-all text-center flex flex-col items-center relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink">
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-pink/0 to-brand-pink/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-700 relative z-10">{occ.icon}</div>
                 <h3 className="font-bold text-xl text-gray-800 dark:text-white mb-2 relative z-10">{occ.name}</h3>

@@ -8,7 +8,7 @@ const Authenticity: React.FC = () => {
       <SEO title="Authenticity Guarantee" description="Learn about Immense Perfumery's commitment to 100% original, genuine fragrances sourced directly from authorized global distributors." />
       
       <div className="text-center mb-16">
-        <div className="w-20 h-20 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-8 text-green-600">
+        <div className="w-20 h-20 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center mx-auto mb-8 text-brand-pink">
            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
         </div>
         <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-6">Guaranteed Original</h1>

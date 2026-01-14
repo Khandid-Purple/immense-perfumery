@@ -129,13 +129,13 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
           <div className="grid grid-cols-2 gap-1.5">
             <button 
               onClick={() => addToCart(product)}
-              className="bg-brand-pink text-white text-[8px] py-2 rounded-md hover:bg-brand-pink-dark transition-colors font-bold uppercase tracking-wider"
+              className="bg-brand-pink text-white text-[8px] py-2 rounded-md hover:bg-brand-pink-dark transition-colors font-bold uppercase tracking-wider focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
             >
               ADD
             </button>
             <button 
               onClick={() => handleViewDetails(product)}
-              className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-white text-[8px] py-2 rounded-md hover:bg-gray-200 dark:hover:bg-white/20 transition-colors font-bold uppercase tracking-wider"
+              className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-200 text-[8px] py-2 rounded-md hover:bg-gray-200 dark:hover:bg-white/20 transition-colors font-bold uppercase tracking-wider focus:outline-none focus-visible:ring-1 focus-visible:ring-brand-pink"
             >
               VIEW
             </button>
@@ -154,7 +154,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
             return <strong key={j} className="text-gray-900 dark:text-white font-bold">{part.slice(2, -2)}</strong>;
           }
           if (part.startsWith('*') && part.endsWith('*')) {
-            return <em key={j} className="text-brand-pink italic">{part.slice(1, -1)}</em>;
+            return <em key={j} className="text-brand-pink dark:text-brand-pink italic">{part.slice(1, -1)}</em>;
           }
           return part;
         })}
@@ -178,13 +178,13 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
                 <p className="text-[9px] uppercase tracking-widest font-bold opacity-80">Scent Consultant</p>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-2 rounded-full transition-colors">
+            <button onClick={() => setIsOpen(false)} aria-label="Close Chat" className="hover:bg-white/20 p-2 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
 
           {/* Chat history */}
-          <div className="flex-1 overflow-y-auto p-5 bg-gray-50 dark:bg-black/20 custom-scrollbar space-y-5">
+          <div className="flex-1 overflow-y-auto p-5 bg-gray-50 dark:bg-black/30 custom-scrollbar space-y-5">
             {messages.map((msg, idx) => {
               const hasText = msg.text && msg.text.trim().length > 0;
               const hasRecs = msg.productRecommendations && msg.productRecommendations.length > 0;
@@ -211,7 +211,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
             })}
             {isTyping && (
               <div className="flex justify-start">
-                 <div className="bg-white dark:bg-white/10 text-brand-pink shadow-sm border border-gray-100 dark:border-white/5 rounded-2xl rounded-tl-none p-4 px-5 flex gap-2 items-center">
+                 <div className="bg-white dark:bg-dark-card text-brand-pink shadow-sm border border-gray-100 dark:border-white/10 rounded-2xl rounded-tl-none p-4 px-5 flex gap-2 items-center">
                     <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms'}}></span>
                     <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms'}}></span>
                     <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms'}}></span>
@@ -228,7 +228,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
                   <button 
                     key={action.label}
                     onClick={() => triggerMessage(action.trigger)}
-                    className="flex-shrink-0 px-4 py-2 rounded-full bg-pink-50 dark:bg-white/5 text-[10px] font-bold text-brand-pink border border-pink-100 dark:border-white/5 hover:bg-brand-pink hover:text-white transition-all whitespace-nowrap"
+                    className="flex-shrink-0 px-4 py-2 rounded-full bg-pink-50 dark:bg-white/5 text-[10px] font-bold text-brand-pink border border-pink-100 dark:border-white/5 hover:bg-brand-pink hover:text-white transition-all whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
                   >
                     {action.label}
                   </button>
@@ -241,14 +241,16 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Talk to Flora..."
+                  aria-label="Chat input"
                   className="flex-1 bg-gray-100 dark:bg-white/5 rounded-full px-6 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink/20 text-gray-800 dark:text-white transition-all"
                 />
                 <button 
                   type="submit" 
                   disabled={!input.trim() || isTyping}
-                  className="bg-brand-pink text-white p-3 rounded-full hover:bg-brand-pink-dark transition-all disabled:opacity-50 shadow-lg shadow-brand-pink/20 flex-shrink-0"
+                  aria-label="Send message"
+                  className="bg-brand-pink text-white p-3 rounded-full hover:bg-brand-pink-dark transition-all disabled:opacity-50 shadow-lg shadow-brand-pink/20 flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2 dark:focus-visible:ring-offset-dark-card"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                 </button>
              </form>
           </div>
@@ -258,7 +260,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ onProductSelect }) => {
       {/* Launcher */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 relative pointer-events-auto group ${isOpen ? 'bg-gray-800 text-white' : 'bg-brand-pink text-white'}`}
+        aria-label={isOpen ? "Close Chatbot" : "Open Chatbot"}
+        className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 relative pointer-events-auto group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-4 dark:focus-visible:ring-offset-dark-bg ${isOpen ? 'bg-gray-800 text-white' : 'bg-brand-pink text-white'}`}
       >
         {isOpen ? (
            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform duration-300"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>

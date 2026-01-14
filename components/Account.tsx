@@ -361,7 +361,9 @@ const Account: React.FC = () => {
                             </div>
                              <div>
                                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Ship To</p>
-                               <p className="text-sm text-gray-800 dark:text-gray-200">{order.shippingAddress.label} </p>
+                               <p className="text-sm text-gray-800 dark:text-gray-200">
+                                 {order.shippingAddress.firstName} {order.shippingAddress.lastName}
+                               </p>
                             </div>
                             <div className="flex items-center gap-2">
                                <span className={`${getStatusColor(order.status)} px-3 py-1 rounded-full text-xs font-bold`}>

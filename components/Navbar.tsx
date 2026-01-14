@@ -47,8 +47,9 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     return (
       <nav className="flex items-center justify-between px-6 md:px-8 py-6 max-w-7xl mx-auto w-full z-50 relative">
         <div 
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg"
           onClick={() => handleNavClick('admin')}
+          tabIndex={0}
         >
            <div className="bg-gray-900 text-white font-serif font-bold p-1 px-2 rounded-sm text-lg shadow-lg">ADMIN</div>
            <span className="font-serif font-bold text-2xl text-gray-800 dark:text-gray-100 tracking-tight transition-colors">Dashboard</span>
@@ -57,14 +58,14 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
         <div className="flex items-center gap-4">
            <button 
             onClick={toggleTheme}
-            className="p-2 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10"
+            className="p-2 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
             title={`Theme: ${theme}`}
           >
             {getThemeIcon(theme)}
           </button>
            <button 
               onClick={handleLogout}
-              className="text-sm font-bold text-white bg-red-500 px-4 py-2 rounded-full hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30"
+              className="text-sm font-bold text-white bg-red-500 px-4 py-2 rounded-full hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
             >
               Logout
             </button>
@@ -77,8 +78,9 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     <>
       <nav className="flex items-center justify-between px-6 md:px-8 py-6 max-w-7xl mx-auto w-full z-50 relative">
         <div 
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg p-1"
           onClick={() => handleNavClick('home')}
+          tabIndex={0}
         >
            <div className="bg-brand-pink text-white font-serif font-bold p-1 px-2 rounded-sm text-lg shadow-lg">IM</div>
            <span className="font-serif font-bold text-2xl text-gray-800 dark:text-gray-100 tracking-tight transition-colors">Immense <span className="text-brand-pink">Perfumery.</span></span>
@@ -90,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
             <button 
               key={item} 
               onClick={() => handleNavClick(item.toLowerCase())}
-              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-pink dark:hover:text-brand-pink transition-colors pb-1"
+              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-pink dark:hover:text-brand-pink transition-colors pb-1 focus:outline-none focus-visible:text-brand-pink"
             >
               {item}
             </button>
@@ -100,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleTheme}
-            className="hidden md:block p-2 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10"
+            className="hidden md:block p-2 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
             title={`Theme: ${theme}`}
           >
             {getThemeIcon(theme)}
@@ -108,7 +110,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
           <button 
             onClick={openWishlist}
-            className="p-2 bg-brand-pink text-white rounded-xl shadow-md relative hover:scale-105 transition-transform"
+            className="p-2 bg-brand-pink text-white rounded-xl shadow-md relative hover:scale-105 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2 dark:focus-visible:ring-offset-dark-bg"
+            aria-label="View Wishlist"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             {wishlist.length > 0 && (
@@ -117,7 +120,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           </button>
           <button 
             onClick={openCart}
-            className="p-2 bg-brand-pink text-white rounded-xl shadow-md relative hover:scale-105 transition-transform"
+            className="p-2 bg-brand-pink text-white rounded-xl shadow-md relative hover:scale-105 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2 dark:focus-visible:ring-offset-dark-bg"
+            aria-label="View Shopping Cart"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             {cartCount > 0 && (
@@ -128,7 +132,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           {/* Account Button (Desktop) */}
           <button 
             onClick={() => handleNavClick(isAuthenticated ? 'account' : 'login')}
-            className="hidden md:flex items-center gap-2 p-1.5 px-3 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10"
+            className="hidden md:flex items-center gap-2 p-1.5 px-3 bg-white/50 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all border border-transparent dark:border-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
           >
              {isAuthenticated && user?.avatar ? (
                <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-lg object-cover border border-brand-pink/20" />
@@ -141,7 +145,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           {/* Mobile Sandwich Menu Button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-gray-800 dark:text-white focus:outline-none"
+            className="md:hidden p-2 text-gray-800 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded-lg"
+            aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
           >
             {isMenuOpen ? (
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -154,55 +159,55 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 top-[88px] z-40 bg-white/95 dark:bg-dark-bg/95 backdrop-blur-md md:hidden animate-fade-in flex flex-col p-6 border-t border-gray-100 dark:border-white/10 overflow-y-auto">
+        <div className="fixed inset-0 top-[88px] z-40 bg-white dark:bg-dark-bg backdrop-blur-md md:hidden animate-fade-in flex flex-col p-6 border-t border-gray-100 dark:border-white/10 overflow-y-auto">
            <div className="flex flex-col gap-6 text-center mt-4">
             {['Home', 'Products', 'About', 'Contact'].map((item) => (
               <button 
                 key={item} 
                 onClick={() => handleNavClick(item.toLowerCase())}
-                className="text-2xl font-serif font-bold text-gray-800 dark:text-gray-100 hover:text-brand-pink transition-colors"
+                className="text-2xl font-serif font-bold text-gray-800 dark:text-white hover:text-brand-pink transition-colors py-2"
               >
                 {item}
               </button>
             ))}
 
-            <div className="border-t border-gray-200 dark:border-white/10 my-2"></div>
+            <div className="border-t border-gray-200 dark:border-white/10 my-4"></div>
             
             <button 
                 onClick={() => handleNavClick(isAuthenticated ? 'account' : 'login')}
-                className="text-xl font-medium text-gray-800 dark:text-gray-100 hover:text-brand-pink transition-colors flex items-center justify-center gap-3"
+                className="text-xl font-medium text-gray-800 dark:text-white hover:text-brand-pink transition-colors flex items-center justify-center gap-3 py-2"
               >
                 {isAuthenticated && user?.avatar && (
-                  <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-lg object-cover" />
+                  <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border-2 border-brand-pink" />
                 )}
                 {isAuthenticated ? 'My Account' : 'Sign In / Register'}
             </button>
            </div>
 
            {/* Mobile Theme Switcher */}
-           <div className="mt-10 pt-10 border-t border-gray-200 dark:border-gray-700">
-             <p className="text-center text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-widest">Theme</p>
+           <div className="mt-auto pt-10 pb-10 border-t border-gray-200 dark:border-white/10">
+             <p className="text-center text-xs font-bold text-gray-400 dark:text-gray-500 mb-6 uppercase tracking-[0.2em]">Visual Experience</p>
              <div className="flex justify-center gap-4">
                 <button 
                   onClick={() => setTheme('light')}
-                  className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all w-20 ${theme === 'light' ? 'bg-brand-pink text-white shadow-lg' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}
+                  className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all w-24 ${theme === 'light' ? 'bg-brand-pink text-white shadow-lg' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300'}`}
                 >
                   {getThemeIcon('light')}
-                  <span className="text-xs">Light</span>
+                  <span className="text-[10px] font-bold uppercase">Light</span>
                 </button>
                 <button 
                   onClick={() => setTheme('dark')}
-                  className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all w-20 ${theme === 'dark' ? 'bg-brand-pink text-white shadow-lg' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}
+                  className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all w-24 ${theme === 'dark' ? 'bg-brand-pink text-white shadow-lg' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300'}`}
                 >
                   {getThemeIcon('dark')}
-                  <span className="text-xs">Dark</span>
+                  <span className="text-[10px] font-bold uppercase">Dark</span>
                 </button>
                 <button 
                   onClick={() => setTheme('system')}
-                  className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all w-20 ${theme === 'system' ? 'bg-brand-pink text-white shadow-lg' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}
+                  className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all w-24 ${theme === 'system' ? 'bg-brand-pink text-white shadow-lg' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300'}`}
                 >
                   {getThemeIcon('system')}
-                  <span className="text-xs">System</span>
+                  <span className="text-[10px] font-bold uppercase">System</span>
                 </button>
              </div>
            </div>
