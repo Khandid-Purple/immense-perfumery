@@ -4,6 +4,8 @@ import type { Product, Review } from '@/lib/types';
 type ProductRow = typeof schema.product.$inferSelect;
 type ReviewRow = typeof schema.review.$inferSelect;
 
+// Convert a database review row into the client-facing Review shape.
+// This ensures date formatting and type alignment with frontend expectations.
 export function toClientReview(r: ReviewRow): Review {
   return {
     id: r.id,
@@ -15,6 +17,8 @@ export function toClientReview(r: ReviewRow): Review {
   };
 }
 
+// Convert a product row from the database into a client-friendly Product object.
+// Optional customer reviews can be passed in and will be transformed as well.
 export function toClientProduct(row: ProductRow, reviews?: ReviewRow[]): Product {
   return {
     id: row.id,
