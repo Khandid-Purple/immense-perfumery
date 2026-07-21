@@ -76,6 +76,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
         <div className="border-t border-gray-200 dark:border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 dark:text-gray-500 text-[10px] font-bold uppercase tracking-tighter">
           <p>&copy; 2024 Immense Perfumery Collects. ACP Estate, Accra, Ghana.</p>
+          <a
+            href="https://paulbotchwey.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-brand-pink transition-colors"
+          >
+            Developed by Paul Botchwey
+          </a>
         </div>
       </div>
     </footer>
